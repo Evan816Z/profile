@@ -1,43 +1,55 @@
 import { motion } from "framer-motion";
-import { ChevronDown } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import TypeWriter from "@/components/TypeWriter";
-import ParticleBackground from "@/components/ParticleBackground";
 import { useStore } from "@/store/useStore";
 
 export default function HeroSection() {
   const { data } = useStore();
 
   return (
-    <section id="hero" className="relative h-screen flex items-center justify-center overflow-hidden">
-      <ParticleBackground />
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-8 pb-12">
+      <div className="w-full max-w-xl mx-auto text-center">
+        {/* 顶部标签 */}
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex items-center justify-center gap-2 mb-6"
+        >
+          <span className="tag-pill">
+            <Sparkles size={12} className="text-[#FFB3D1]" />
+            个人主页
+          </span>
+          <span className="tag-pill">
+            <span className="live-dot" />
+            在线
+          </span>
+        </motion.div>
 
-      {/* 渐变装饰 */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-gold/5 rounded-full blur-3xl" />
-
-      <div className="relative z-10 text-center px-6">
         {/* 头像 */}
         <motion.div
-          initial={{ scale: 0, opacity: 0 }}
+          initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           transition={{ duration: 0.6, type: "spring" }}
-          className="mb-8"
+          className="mb-6"
         >
-          <div className="w-32 h-32 mx-auto rounded-full overflow-hidden ring-2 ring-accent/30 ring-offset-4 ring-offset-bg animate-glow-pulse">
-            <img
-              src={data.hero.avatar}
-              alt={data.hero.name}
-              className="w-full h-full object-cover"
-            />
+          <div className="w-28 h-28 mx-auto rounded-full p-1 bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3]">
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#0E0A1C] p-1">
+              <img
+                src={data.hero.avatar}
+                alt={data.hero.name}
+                className="w-full h-full rounded-full object-cover"
+              />
+            </div>
           </div>
         </motion.div>
 
         {/* 姓名 */}
         <motion.h1
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.3, duration: 0.6 }}
-          className="font-display text-6xl md:text-8xl font-bold mb-6 text-gradient"
+          transition={{ delay: 0.2, duration: 0.6 }}
+          className="font-display text-5xl md:text-6xl font-bold mb-4 text-gradient tracking-tight"
         >
           {data.hero.name}
         </motion.h1>
@@ -46,27 +58,27 @@ export default function HeroSection() {
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 0.7, duration: 0.5 }}
-          className="text-xl md:text-2xl text-fg-dim font-display font-light tracking-wide"
+          transition={{ delay: 0.5, duration: 0.5 }}
+          className="text-lg text-[rgba(252,220,236,0.6)] font-body mb-8"
         >
           <TypeWriter texts={data.hero.taglines} />
         </motion.div>
 
-        {/* 向下箭头 */}
+        {/* 特性小字 */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.5 }}
-          className="absolute bottom-12 left-1/2 -translate-x-1/2"
+          transition={{ delay: 0.8 }}
+          className="flex items-center justify-center gap-6 text-xs text-[rgba(252,220,236,0.4)]"
         >
-          <a href="#about" className="block text-muted hover:text-accent transition-colors">
-            <motion.div
-              animate={{ y: [0, 8, 0] }}
-              transition={{ duration: 2, repeat: Infinity }}
-            >
-              <ChevronDown size={32} />
-            </motion.div>
-          </a>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1 h-1 rounded-full bg-[#A58CFF]" />
+            全栈开发
+          </span>
+          <span className="flex items-center gap-1.5">
+            <span className="w-1 h-1 rounded-full bg-[#5B8FE3]" />
+            开源贡献
+          </span>
         </motion.div>
       </div>
     </section>

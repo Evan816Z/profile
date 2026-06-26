@@ -8,60 +8,64 @@ export default function ProjectsSection() {
 
   return (
     <SectionWrapper id="projects">
-      <div className="flex items-center gap-3 mb-12">
-        <FolderGit2 size={28} className="text-accent" />
-        <h2 className="font-display text-4xl font-bold text-fg">项目</h2>
-        <div className="flex-1 h-px bg-gradient-to-r from-accent/30 to-transparent" />
-      </div>
+      <div className="glass-card glass-shimmer p-6 md:p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
+            <FolderGit2 size={18} className="text-[#5B8FE3]" />
+          </div>
+          <div>
+            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">项目作品</h2>
+            <p className="text-xs text-[rgba(252,220,236,0.4)]">Projects</p>
+          </div>
+        </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {data.projects.map((project, idx) => (
-          <motion.a
-            key={project.title}
-            href={project.link}
-            target="_blank"
-            rel="noopener noreferrer"
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: idx * 0.1, duration: 0.5 }}
-            whileHover={{ y: -6 }}
-            className="glass rounded-2xl overflow-hidden group transition-all duration-300 hover:shadow-[0_0_40px_rgba(0,255,200,0.1)] block"
-          >
-            {/* 项目图片 */}
-            <div className="h-48 overflow-hidden relative">
-              <img
-                src={project.image}
-                alt={project.title}
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-bg/80 to-transparent" />
-              <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                <ExternalLink size={18} className="text-accent" />
+        <div className="space-y-4">
+          {data.projects.map((project, idx) => (
+            <motion.a
+              key={project.title}
+              href={project.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: idx * 0.1, duration: 0.5 }}
+              whileHover={{ scale: 1.01 }}
+              className="block rounded-2xl overflow-hidden bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,143,187,0.25)] transition-all group"
+            >
+              <div className="h-36 overflow-hidden relative">
+                <img
+                  src={project.image}
+                  alt={project.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0E0A1C]/90 via-transparent to-transparent" />
+                <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <ExternalLink size={16} className="text-[#FFB3D1]" />
+                </div>
               </div>
-            </div>
 
-            {/* 项目信息 */}
-            <div className="p-5">
-              <h3 className="font-display text-lg font-semibold text-fg mb-2 group-hover:text-accent transition-colors">
-                {project.title}
-              </h3>
-              <p className="text-sm text-fg-dim mb-4 line-clamp-2">
-                {project.description}
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {project.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2.5 py-1 rounded-full bg-accent/10 text-accent/80 font-medium"
-                  >
-                    {tag}
-                  </span>
-                ))}
+              <div className="p-4">
+                <h3 className="font-display text-base font-semibold text-[#FFE6F2] mb-1.5 group-hover:text-[#FFB3D1] transition-colors">
+                  {project.title}
+                </h3>
+                <p className="text-xs text-[rgba(252,220,236,0.55)] mb-3 line-clamp-2">
+                  {project.description}
+                </p>
+                <div className="flex flex-wrap gap-1.5">
+                  {project.tags.map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-[10px] px-2 py-1 rounded-full bg-[rgba(165,140,255,0.12)] text-[#A58CFF] font-medium border border-[rgba(165,140,255,0.2)]"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            </div>
-          </motion.a>
-        ))}
+            </motion.a>
+          ))}
+        </div>
       </div>
     </SectionWrapper>
   );

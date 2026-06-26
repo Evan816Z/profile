@@ -1,15 +1,30 @@
 import { motion } from "framer-motion";
-import { Mail, Heart } from "lucide-react";
-import * as Icons from "lucide-react";
+import { Mail, MessageCircle, Send, ExternalLink } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { useStore } from "@/store/useStore";
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type IconMap = Record<string, React.ComponentType<any>>;
+const iconMap: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
+  github: (props) => (
+    <svg viewBox="0 0 24 24" width={props.size || 18} height={props.size || 18} fill="currentColor" className={props.className}>
+      <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+    </svg>
+  ),
+  twitter: (props) => (
+    <svg viewBox="0 0 24 24" width={props.size || 18} height={props.size || 18} fill="currentColor" className={props.className}>
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+    </svg>
+  ),
+  linkedin: (props) => (
+    <svg viewBox="0 0 24 24" width={props.size || 18} height={props.size || 18} fill="currentColor" className={props.className}>
+      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+    </svg>
+  ),
+  mail: Mail,
+  website: ExternalLink,
+};
 
-function DynamicIcon({ name, ...props }: { name: string } & React.SVGProps<SVGSVGElement>) {
-  const IconComponent = (Icons as unknown as IconMap)[name];
-  if (!IconComponent) return <Icons.Link {...props} />;
+function DynamicSocialIcon({ name, ...props }: { name: string; size?: number; className?: string }) {
+  const IconComponent = iconMap[name.toLowerCase()] || Send;
   return <IconComponent {...props} />;
 }
 
@@ -17,63 +32,60 @@ export default function ContactSection() {
   const { data } = useStore();
 
   return (
-    <SectionWrapper id="contact">
-      <div className="flex items-center gap-3 mb-12">
-        <Mail size={28} className="text-accent" />
-        <h2 className="font-display text-4xl font-bold text-fg">联系方式</h2>
-        <div className="flex-1 h-px bg-gradient-to-r from-accent/30 to-transparent" />
-      </div>
+    <SectionWrapper id="contact" className="pb-32">
+      <div className="glass-card glass-shimmer p-6 md:p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
+            <MessageCircle size={18} className="text-[#FF8FB8]" />
+          </div>
+          <div>
+            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">联系方式</h2>
+            <p className="text-xs text-[rgba(252,220,236,0.4)]">Get in Touch</p>
+          </div>
+        </div>
 
-      <div className="max-w-2xl mx-auto text-center">
-        <p className="text-lg text-fg-dim mb-8">
-          如果你有任何问题或合作意向，欢迎通过以下方式联系我
+        <p className="text-sm text-[rgba(252,220,236,0.6)] mb-6 leading-relaxed">
+          {data.contact.description}
         </p>
 
-        {/* 邮箱 */}
-        <motion.a
-          href={`mailto:${data.contact.email}`}
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="inline-flex items-center gap-3 px-8 py-4 rounded-full glass glass-hover text-accent text-lg font-display font-medium mb-10 transition-all duration-300"
-        >
-          <Mail size={20} />
-          {data.contact.email}
-        </motion.a>
+        <div className="space-y-3 mb-6">
+          <a
+            href={`mailto:${data.contact.email}`}
+            className="cred-row cred-row-accent flex items-center justify-between group"
+          >
+            <div className="flex items-center gap-3">
+              <Mail size={16} className="text-[#FFB3D1]" />
+              <span className="text-sm text-[rgba(252,220,236,0.9)] font-mono">
+                {data.contact.email}
+              </span>
+            </div>
+            <span className="text-xs text-[#FFB3D1] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+              发送邮件
+            </span>
+          </a>
+        </div>
 
-        {/* 社交链接 */}
-        <div className="flex justify-center gap-4 mt-8">
-          {data.contact.socials.map((social, idx) => (
+        <div className="grid grid-cols-4 gap-2">
+          {data.contact.socials.map((social) => (
             <motion.a
               key={social.platform}
               href={social.url}
               target="_blank"
               rel="noopener noreferrer"
-              initial={{ opacity: 0, scale: 0 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.1 + idx * 0.1, type: "spring" }}
-              whileHover={{ scale: 1.15, y: -4 }}
-              className="w-12 h-12 rounded-full glass glass-hover flex items-center justify-center text-muted hover:text-accent transition-colors"
-              title={social.platform}
+              whileHover={{ y: -3 }}
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,143,187,0.25)] hover:bg-[rgba(255,143,187,0.06)] transition-all"
             >
-              <DynamicIcon name={social.icon} className="w-5 h-5" />
+              <DynamicSocialIcon
+                name={social.platform}
+                size={20}
+                className="text-[rgba(252,220,236,0.55)]"
+              />
+              <span className="text-[10px] text-[rgba(252,220,236,0.65)] capitalize">
+                {social.platform}
+              </span>
             </motion.a>
           ))}
         </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-24 pt-8 border-t border-white/5 text-center">
-        <p className="text-sm text-muted flex items-center justify-center gap-1.5">
-          Made with <Heart size={14} className="text-accent" /> using React & Tailwind
-        </p>
-        <a
-          href="#/admin"
-          className="inline-block mt-3 text-xs text-muted/40 hover:text-muted transition-colors"
-        >
-          管理后台
-        </a>
       </div>
     </SectionWrapper>
   );

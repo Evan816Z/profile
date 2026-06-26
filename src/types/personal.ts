@@ -21,6 +21,7 @@ export interface PersonalData {
     image: string;
   }[];
   contact: {
+    description: string;
     email: string;
     socials: {
       platform: string;

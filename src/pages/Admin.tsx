@@ -1,404 +1,435 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useStore } from "@/store/useStore";
+import { defaultData } from "@/data/default";
+import { ArrowLeft, Save, RotateCcw, Download, Upload, Eye, Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
 import type { PersonalData } from "@/types/personal";
-import {
-  Save,
-  RotateCcw,
-  Download,
-  Upload,
-  ChevronDown,
-  ChevronUp,
-  Eye,
-  Home,
-  Plus,
-  Trash2,
-} from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
-
-// 可折叠区块
-function Collapsible({
-  title,
-  children,
-  defaultOpen = false,
-}: {
-  title: string;
-  children: React.ReactNode;
-  defaultOpen?: boolean;
-}) {
-  const [open, setOpen] = useState(defaultOpen);
-  return (
-    <div className="glass rounded-xl overflow-hidden">
-      <button
-        onClick={() => setOpen(!open)}
-        className="w-full px-5 py-4 flex items-center justify-between text-left hover:bg-white/5 transition-colors"
-      >
-        <span className="font-display font-semibold text-fg">{title}</span>
-        {open ? <ChevronUp size={18} className="text-muted" /> : <ChevronDown size={18} className="text-muted" />}
-      </button>
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: "auto", opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            className="overflow-hidden"
-          >
-            <div className="px-5 pb-5 space-y-4">{children}</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
-
-// 输入框
-function Input({
-  label,
-  value,
-  onChange,
-  placeholder,
-  multiline = false,
-}: {
-  label: string;
-  value: string;
-  onChange: (v: string) => void;
-  placeholder?: string;
-  multiline?: boolean;
-}) {
-  const cls =
-    "w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-fg placeholder:text-muted/50 focus:outline-none focus:border-accent/40 focus:ring-1 focus:ring-accent/20 transition-all font-body text-sm";
-  return (
-    <div>
-      <label className="block text-xs text-muted mb-1.5 uppercase tracking-wider">{label}</label>
-      {multiline ? (
-        <textarea value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} rows={4} className={cls} />
-      ) : (
-        <input value={value} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} className={cls} />
-      )}
-    </div>
-  );
-}
-
-// 标签列表编辑
-function TagListEditor({
-  label,
-  tags,
-  onChange,
-}: {
-  label: string;
-  tags: string[];
-  onChange: (tags: string[]) => void;
-}) {
-  const [newTag, setNewTag] = useState("");
-  return (
-    <div>
-      <label className="block text-xs text-muted mb-1.5 uppercase tracking-wider">{label}</label>
-      <div className="flex flex-wrap gap-2 mb-2">
-        {tags.map((tag, i) => (
-          <span key={i} className="flex items-center gap-1 px-2.5 py-1 rounded-full bg-accent/10 text-accent/80 text-xs font-medium">
-            {tag}
-            <button onClick={() => onChange(tags.filter((_, idx) => idx !== i))} className="hover:text-red-400 transition-colors">
-              <Trash2 size={10} />
-            </button>
-          </span>
-        ))}
-      </div>
-      <div className="flex gap-2">
-        <input
-          value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && newTag.trim()) {
-              onChange([...tags, newTag.trim()]);
-              setNewTag("");
-            }
-          }}
-          placeholder="输入后按回车添加"
-          className="flex-1 bg-white/5 border border-white/10 rounded-lg px-3 py-1.5 text-fg text-xs placeholder:text-muted/50 focus:outline-none focus:border-accent/40 transition-all"
-        />
-      </div>
-    </div>
-  );
-}
+import NebulaBackground from "@/components/NebulaBackground";
 
 export default function Admin() {
-  const { data, updateData, resetData, exportData, importData } = useStore();
-  const [editData, setEditData] = useState<PersonalData>(JSON.parse(JSON.stringify(data)));
-  const [saved, setSaved] = useState(false);
+  const { data, updateData, resetData } = useStore();
+  const [formData, setFormData] = useState<PersonalData>(data);
+  const [activeTab, setActiveTab] = useState("hero");
+  const [showPreview, setShowPreview] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const update = (path: string, value: unknown) => {
-    const newData = JSON.parse(JSON.stringify(editData));
-    const keys = path.split(".");
-    let obj: Record<string, unknown> = newData;
-    for (let i = 0; i < keys.length - 1; i++) {
-      obj = obj[keys[i]] as Record<string, unknown>;
-    }
-    obj[keys[keys.length - 1]] = value;
-    setEditData(newData);
+  useEffect(() => {
+    setFormData(data);
+  }, [data]);
+
+  const handleChange = (path: string, value: unknown) => {
+    setFormData((prev) => {
+      const keys = path.split(".");
+      const next = structuredClone(prev) as PersonalData & Record<string, unknown>;
+      let current: Record<string, unknown> = next;
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        current = current[key] as Record<string, unknown>;
+      }
+      current[keys[keys.length - 1]] = value;
+      return next;
+    });
   };
 
   const handleSave = () => {
-    updateData(editData);
-    setSaved(true);
-    setTimeout(() => setSaved(false), 2000);
+    updateData(formData);
+    alert("保存成功！");
   };
 
   const handleReset = () => {
-    if (window.confirm("确定要重置为默认数据吗？所有修改将丢失。")) {
+    if (confirm("确定要重置为默认数据吗？这会清空你所有的自定义内容。")) {
       resetData();
-      setEditData(JSON.parse(JSON.stringify(data)));
+      setFormData(defaultData);
     }
+  };
+
+  const handleExport = () => {
+    const useStoreInstance = useStore.getState();
+    const blob = new Blob([JSON.stringify(useStoreInstance.data, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "personal-site-data.json";
+    a.click();
+    URL.revokeObjectURL(url);
   };
 
   const handleImport = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
-    reader.onload = (ev) => {
-      const result = importData(ev.target?.result as string);
-      if (result) {
-        setEditData(JSON.parse(JSON.stringify(useStore.getState().data)));
-        setSaved(false);
-      } else {
-        alert("导入失败：JSON 格式无效");
+    reader.onload = (event) => {
+      try {
+        const json = event.target?.result as string;
+        const parsed = JSON.parse(json) as PersonalData;
+        setFormData(parsed);
+        updateData(parsed);
+        alert("导入成功！");
+      } catch {
+        alert("导入失败，请检查 JSON 格式。");
       }
     };
     reader.readAsText(file);
+    e.target.value = "";
   };
 
+  const renderField = (label: string, path: string, type = "text", placeholder = "") => (
+    <div className="mb-4">
+      <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">{label}</label>
+      <input
+        type={type}
+        value={(() => {
+          const keys = path.split(".");
+          let current: Record<string, unknown> = formData as unknown as Record<string, unknown>;
+          for (const key of keys) {
+            current = current[key] as Record<string, unknown>;
+          }
+          return (current as unknown as string) || "";
+        })()}
+        onChange={(e) => handleChange(path, e.target.value)}
+        placeholder={placeholder}
+        className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors"
+      />
+    </div>
+  );
+
+  const renderTextarea = (label: string, path: string, placeholder = "") => (
+    <div className="mb-4">
+      <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">{label}</label>
+      <textarea
+        value={(() => {
+          const keys = path.split(".");
+          let current: Record<string, unknown> = formData as unknown as Record<string, unknown>;
+          for (const key of keys) {
+            current = current[key] as Record<string, unknown>;
+          }
+          return (current as unknown as string) || "";
+        })()}
+        onChange={(e) => handleChange(path, e.target.value)}
+        placeholder={placeholder}
+        rows={4}
+        className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors resize-none"
+      />
+    </div>
+  );
+
+  const tabs = [
+    { id: "hero", label: "Hero", icon: "✦" },
+    { id: "about", label: "关于", icon: "◎" },
+    { id: "skills", label: "技能", icon: "✧" },
+    { id: "projects", label: "项目", icon: "◇" },
+    { id: "contact", label: "联系", icon: "✉" },
+  ];
+
   return (
-    <div className="min-h-screen bg-bg">
-      {/* 顶部导航 */}
-      <header className="sticky top-0 z-50 glass border-b border-white/5">
-        <div className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Eye size={22} className="text-accent" />
-            <h1 className="font-display text-xl font-bold text-fg">管理后台</h1>
-          </div>
-          <div className="flex items-center gap-3">
-            <a
-              href="/"
-              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-white/10 text-fg-dim hover:border-accent/30 hover:text-accent transition-all text-sm font-display"
-            >
-              <Home size={16} />
-              主页预览
-            </a>
-          </div>
-        </div>
-      </header>
+    <div className="relative min-h-screen">
+      <NebulaBackground />
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* 操作栏 */}
-        <div className="flex flex-wrap items-center gap-3 mb-8">
-          <button
-            onClick={handleSave}
-            className={`flex items-center gap-2 px-5 py-2.5 rounded-lg font-display font-medium text-sm transition-all duration-300 ${
-              saved
-                ? "bg-green-500/20 text-green-400 border border-green-500/30"
-                : "bg-accent/15 text-accent border border-accent/30 hover:bg-accent/25"
-            }`}
-          >
-            <Save size={16} />
-            {saved ? "已保存" : "保存"}
-          </button>
-          <button
-            onClick={handleReset}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 text-fg-dim hover:border-red-400/30 hover:text-red-400 transition-all text-sm font-display"
-          >
-            <RotateCcw size={16} />
-            重置
-          </button>
-          <button
-            onClick={exportData}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 text-fg-dim hover:border-gold/30 hover:text-gold transition-all text-sm font-display"
-          >
-            <Download size={16} />
-            导出
-          </button>
-          <button
-            onClick={() => fileInputRef.current?.click()}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg border border-white/10 text-fg-dim hover:border-accent/30 hover:text-accent transition-all text-sm font-display"
-          >
-            <Upload size={16} />
-            导入
-          </button>
-          <input ref={fileInputRef} type="file" accept=".json" className="hidden" onChange={handleImport} />
-        </div>
+      <div className="relative z-10 flex h-screen overflow-hidden">
+        {/* Sidebar Toggle */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="fixed top-4 left-4 z-50 icon-btn lg:hidden"
+        >
+          {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
 
-        {/* 编辑区 */}
-        <div className="grid lg:grid-cols-2 gap-8">
-          {/* 左侧：表单 */}
-          <div className="space-y-4">
-            <Collapsible title="Hero 区域" defaultOpen>
-              <Input label="姓名" value={editData.hero.name} onChange={(v) => update("hero.name", v)} />
-              <TagListEditor
-                label="标语列表"
-                tags={editData.hero.taglines}
-                onChange={(v) => update("hero.taglines", v)}
-              />
-              <Input label="头像 URL" value={editData.hero.avatar} onChange={(v) => update("hero.avatar", v)} placeholder="https://..." />
-            </Collapsible>
-
-            <Collapsible title="关于我" defaultOpen>
-              <Input label="自我描述" value={editData.about.bio} onChange={(v) => update("about.bio", v)} multiline />
-              <Input label="位置" value={editData.about.location} onChange={(v) => update("about.location", v)} />
-            </Collapsible>
-
-            <Collapsible title="技能">
-              {editData.skills.map((skill, i) => (
-                <div key={i} className="flex gap-2 items-start">
-                  <div className="flex-1 space-y-2">
-                    <Input label={`技能 ${i + 1}`} value={skill.name} onChange={(v) => {
-                      const skills = [...editData.skills];
-                      skills[i] = { ...skills[i], name: v };
-                      setEditData({ ...editData, skills });
-                    }} />
-                    <div className="grid grid-cols-2 gap-2">
-                      <Input label="图标" value={skill.icon} onChange={(v) => {
-                        const skills = [...editData.skills];
-                        skills[i] = { ...skills[i], icon: v };
-                        setEditData({ ...editData, skills });
-                      }} placeholder="lucide 图标名" />
-                      <Input label="分类" value={skill.category} onChange={(v) => {
-                        const skills = [...editData.skills];
-                        skills[i] = { ...skills[i], category: v };
-                        setEditData({ ...editData, skills });
-                      }} />
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setEditData({ ...editData, skills: editData.skills.filter((_, idx) => idx !== i) })}
-                    className="mt-7 p-2 rounded-lg text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-all"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
-              <button
-                onClick={() => setEditData({ ...editData, skills: [...editData.skills, { name: "", icon: "Code2", category: "前端" }] })}
-                className="flex items-center gap-2 text-sm text-accent/60 hover:text-accent transition-colors"
-              >
-                <Plus size={14} /> 添加技能
-              </button>
-            </Collapsible>
-
-            <Collapsible title="项目">
-              {editData.projects.map((project, i) => (
-                <div key={i} className="p-4 glass rounded-lg space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-sm text-muted">项目 {i + 1}</span>
-                    <button
-                      onClick={() => setEditData({ ...editData, projects: editData.projects.filter((_, idx) => idx !== i) })}
-                      className="p-1.5 rounded text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-all"
-                    >
-                      <Trash2 size={14} />
-                    </button>
-                  </div>
-                  <Input label="标题" value={project.title} onChange={(v) => {
-                    const projects = [...editData.projects];
-                    projects[i] = { ...projects[i], title: v };
-                    setEditData({ ...editData, projects });
-                  }} />
-                  <Input label="描述" value={project.description} onChange={(v) => {
-                    const projects = [...editData.projects];
-                    projects[i] = { ...projects[i], description: v };
-                    setEditData({ ...editData, projects });
-                  }} multiline />
-                  <TagListEditor
-                    label="技术栈"
-                    tags={project.tags}
-                    onChange={(tags) => {
-                      const projects = [...editData.projects];
-                      projects[i] = { ...projects[i], tags };
-                      setEditData({ ...editData, projects });
-                    }}
-                  />
-                  <Input label="链接" value={project.link} onChange={(v) => {
-                    const projects = [...editData.projects];
-                    projects[i] = { ...projects[i], link: v };
-                    setEditData({ ...editData, projects });
-                  }} placeholder="https://..." />
-                  <Input label="图片 URL" value={project.image} onChange={(v) => {
-                    const projects = [...editData.projects];
-                    projects[i] = { ...projects[i], image: v };
-                    setEditData({ ...editData, projects });
-                  }} placeholder="https://..." />
-                </div>
-              ))}
-              <button
-                onClick={() => setEditData({
-                  ...editData,
-                  projects: [...editData.projects, { title: "", description: "", tags: [], link: "", image: "" }],
-                })}
-                className="flex items-center gap-2 text-sm text-accent/60 hover:text-accent transition-colors"
-              >
-                <Plus size={14} /> 添加项目
-              </button>
-            </Collapsible>
-
-            <Collapsible title="联系方式">
-              <Input label="邮箱" value={editData.contact.email} onChange={(v) => update("contact.email", v)} />
-              {editData.contact.socials.map((social, i) => (
-                <div key={i} className="flex gap-2 items-end">
-                  <div className="flex-1 grid grid-cols-3 gap-2">
-                    <Input label="平台" value={social.platform} onChange={(v) => {
-                      const socials = [...editData.contact.socials];
-                      socials[i] = { ...socials[i], platform: v };
-                      setEditData({ ...editData, contact: { ...editData.contact, socials } });
-                    }} />
-                    <Input label="URL" value={social.url} onChange={(v) => {
-                      const socials = [...editData.contact.socials];
-                      socials[i] = { ...socials[i], url: v };
-                      setEditData({ ...editData, contact: { ...editData.contact, socials } });
-                    }} />
-                    <Input label="图标" value={social.icon} onChange={(v) => {
-                      const socials = [...editData.contact.socials];
-                      socials[i] = { ...socials[i], icon: v };
-                      setEditData({ ...editData, contact: { ...editData.contact, socials } });
-                    }} placeholder="lucide 图标名" />
-                  </div>
-                  <button
-                    onClick={() => {
-                      const socials = editData.contact.socials.filter((_, idx) => idx !== i);
-                      setEditData({ ...editData, contact: { ...editData.contact, socials } });
-                    }}
-                    className="mb-1 p-2 rounded-lg text-red-400/60 hover:text-red-400 hover:bg-red-400/10 transition-all"
-                  >
-                    <Trash2 size={16} />
-                  </button>
-                </div>
-              ))}
-              <button
-                onClick={() => setEditData({
-                  ...editData,
-                  contact: {
-                    ...editData.contact,
-                    socials: [...editData.contact.socials, { platform: "", url: "", icon: "Link" }],
-                  },
-                })}
-                className="flex items-center gap-2 text-sm text-accent/60 hover:text-accent transition-colors"
-              >
-                <Plus size={14} /> 添加社交链接
-              </button>
-            </Collapsible>
-          </div>
-
-          {/* 右侧：预览 */}
-          <div className="hidden lg:block sticky top-24">
-            <div className="glass rounded-2xl p-4">
-              <h3 className="text-sm text-muted mb-3 font-display uppercase tracking-wider">实时预览</h3>
-              <div className="rounded-xl overflow-hidden border border-white/5 bg-bg h-[70vh] overflow-y-auto">
-                <iframe
-                  src="/"
-                  title="预览"
-                  className="w-full h-full scale-100 origin-top-left pointer-events-none"
-                />
+        {/* Sidebar */}
+        <aside
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-[rgba(14,10,28,0.85)] backdrop-blur-2xl border-r border-[rgba(255,143,187,0.12)] transform transition-transform duration-300 ${
+            sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
+          }`}
+        >
+          <div className="p-5 border-b border-[rgba(255,255,255,0.06)]">
+            <div className="flex items-center gap-3 mb-1">
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FFB3D1] to-[#5B8FE3] flex items-center justify-center text-[#0E0A1C] font-bold text-sm">
+                E
               </div>
+              <h1 className="font-display text-lg font-semibold text-[#FFE6F2]">编辑后台</h1>
+            </div>
+            <p className="text-[10px] text-[rgba(252,220,236,0.4)]">Admin Dashboard</p>
+          </div>
+
+          <nav className="p-3 space-y-1">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSidebarOpen(false);
+                }}
+                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
+                  activeTab === tab.id
+                    ? "bg-gradient-to-r from-[rgba(255,179,209,0.2)] to-[rgba(91,143,227,0.15)] text-[#FFE6F2] border border-[rgba(255,143,187,0.25)]"
+                    : "text-[rgba(252,220,236,0.55)] hover:bg-[rgba(255,255,255,0.04)]"
+                }`}
+              >
+                <span className="text-[#FFB3D1]">{tab.icon}</span>
+                {tab.label}
+              </button>
+            ))}
+          </nav>
+
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[rgba(255,255,255,0.06)] space-y-2">
+            <Link
+              to="/"
+              className="flex items-center justify-center gap-2 w-full cta-ghost text-xs"
+            >
+              <ArrowLeft size={14} />
+              返回主页
+            </Link>
+            <div className="flex gap-2">
+              <button onClick={handleSave} className="flex-1 cta-primary text-xs flex items-center justify-center gap-1.5">
+                <Save size={13} />
+                保存
+              </button>
+              <button onClick={handleReset} className="flex-1 cta-ghost text-xs flex items-center justify-center gap-1.5">
+                <RotateCcw size={13} />
+                重置
+              </button>
+            </div>
+            <div className="flex gap-2">
+              <button onClick={handleExport} className="flex-1 cta-ghost text-xs flex items-center justify-center gap-1.5">
+                <Download size={13} />
+                导出
+              </button>
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                className="flex-1 cta-ghost text-xs flex items-center justify-center gap-1.5"
+              >
+                <Upload size={13} />
+                导入
+              </button>
+            </div>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".json"
+              onChange={handleImport}
+              className="hidden"
+            />
+          </div>
+        </aside>
+
+        {/* Form Area */}
+        <main className="flex-1 flex flex-col min-w-0 bg-[rgba(14,10,28,0.5)]">
+          <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(255,255,255,0.06)]">
+            <h2 className="font-display text-base font-semibold text-[#FFE6F2]">
+              {tabs.find((t) => t.id === activeTab)?.label}
+            </h2>
+            <button
+              onClick={() => setShowPreview(!showPreview)}
+              className="flex items-center gap-1.5 text-xs text-[rgba(252,220,236,0.55)] hover:text-[#FFE6F2] transition-colors"
+            >
+              <Eye size={14} />
+              {showPreview ? "隐藏预览" : "显示预览"}
+            </button>
+          </div>
+
+          <div className="flex-1 overflow-y-auto p-6">
+            <div className="max-w-xl mx-auto">
+              {activeTab === "hero" && (
+                <div className="glass-card p-5">
+                  {renderField("姓名", "hero.name", "text", "你的名字")}
+                  {renderField("头像 URL", "hero.avatar", "text", "头像图片链接")}
+                  <div className="mb-4">
+                    <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">标语（每行一个）</label>
+                    <textarea
+                      value={formData.hero.taglines.join("\n")}
+                      onChange={(e) =>
+                        handleChange(
+                          "hero.taglines",
+                          e.target.value.split("\n").filter((line) => line.trim() !== "")
+                        )
+                      }
+                      rows={4}
+                      placeholder="例如：热爱编程&#10;全栈开发者"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors resize-none"
+                    />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === "about" && (
+                <div className="glass-card p-5">
+                  {renderTextarea("个人简介", "about.bio", "介绍一下你自己...")}
+                  {renderField("所在地", "about.location", "text", "城市 / 国家")}
+                </div>
+              )}
+
+              {activeTab === "skills" && (
+                <div className="glass-card p-5 space-y-4">
+                  {formData.skills.map((skill, index) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]"
+                    >
+                      <div className="grid grid-cols-3 gap-3 mb-3">
+                        {renderField("技能名称", `skills.${index}.name`)}
+                        {renderField("分类", `skills.${index}.category`)}
+                        {renderField("图标", `skills.${index}.icon`)}
+                      </div>
+                      <button
+                        onClick={() =>
+                          handleChange(
+                            "skills",
+                            formData.skills.filter((_, i) => i !== index)
+                          )
+                        }
+                        className="text-xs text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
+                      >
+                        删除此项
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() =>
+                      handleChange("skills", [
+                        ...formData.skills,
+                        { name: "新技能", category: "技术", icon: "Code2" },
+                      ])
+                    }
+                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.3)] text-sm text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
+                  >
+                    + 添加技能
+                  </button>
+                </div>
+              )}
+
+              {activeTab === "projects" && (
+                <div className="glass-card p-5 space-y-4">
+                  {formData.projects.map((project, index) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]"
+                    >
+                      {renderField("项目名称", `projects.${index}.title`)}
+                      {renderTextarea("项目描述", `projects.${index}.description`)}
+                      {renderField("项目链接", `projects.${index}.link`)}
+                      {renderField("封面图片", `projects.${index}.image`)}
+                      <div className="mb-3">
+                        <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">标签（逗号分隔）</label>
+                        <input
+                          type="text"
+                          value={project.tags.join(", ")}
+                          onChange={(e) =>
+                            handleChange(
+                              `projects.${index}.tags`,
+                              e.target.value.split(",").map((t) => t.trim())
+                            )
+                          }
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors"
+                        />
+                      </div>
+                      <button
+                        onClick={() =>
+                          handleChange(
+                            "projects",
+                            formData.projects.filter((_, i) => i !== index)
+                          )
+                        }
+                        className="text-xs text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
+                      >
+                        删除此项
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() =>
+                      handleChange("projects", [
+                        ...formData.projects,
+                        {
+                          title: "新项目",
+                          description: "项目描述",
+                          image: "https://placehold.co/600x400/15102A/FFB3D1?text=Project",
+                          link: "#",
+                          tags: ["Tag"],
+                        },
+                      ])
+                    }
+                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.3)] text-sm text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
+                  >
+                    + 添加项目
+                  </button>
+                </div>
+              )}
+
+              {activeTab === "contact" && (
+                <div className="glass-card p-5 space-y-4">
+                  {renderTextarea("联系说明", "contact.description", "一段简短的联系说明...")}
+                  {renderField("邮箱", "contact.email", "email", "your@email.com")}
+                  {formData.contact.socials.map((social, index) => (
+                    <div
+                      key={index}
+                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]"
+                    >
+                      <div className="grid grid-cols-2 gap-3">
+                        {renderField("平台", `contact.socials.${index}.platform`)}
+                        {renderField("链接", `contact.socials.${index}.url`)}
+                      </div>
+                      <button
+                        onClick={() =>
+                          handleChange(
+                            "contact.socials",
+                            formData.contact.socials.filter((_, i) => i !== index)
+                          )
+                        }
+                        className="text-xs text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
+                      >
+                        删除此项
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    onClick={() =>
+                      handleChange("contact.socials", [
+                        ...formData.contact.socials,
+                        { platform: "github", url: "https://github.com/" },
+                      ])
+                    }
+                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.3)] text-sm text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
+                  >
+                    + 添加社交链接
+                  </button>
+                </div>
+              )}
             </div>
           </div>
-        </div>
+        </main>
+
+        {/* Preview */}
+        {showPreview && (
+          <div className="hidden lg:flex w-[420px] flex-col border-l border-[rgba(255,255,255,0.06)] bg-[rgba(14,10,28,0.3)]">
+            <div className="px-5 py-4 border-b border-[rgba(255,255,255,0.06)]">
+              <h3 className="font-display text-sm font-semibold text-[#FFE6F2]">实时预览</h3>
+            </div>
+            <div className="flex-1 p-4 overflow-hidden">
+              <iframe
+                srcDoc={`
+                  <!DOCTYPE html>
+                  <html>
+                    <head>
+                      <base href="/">
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <link rel="stylesheet" href="/assets/index.css">
+                      <style>body{margin:0;}</style>
+                    </head>
+                    <body>
+                      <div id="root"></div>
+                      <script type="module" src="/assets/index.js"></script>
+                    </body>
+                  </html>
+                `}
+                className="w-full h-full rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[#0E0A1C]"
+                title="preview"
+              />
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

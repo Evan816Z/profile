@@ -13,13 +13,13 @@ export default function SectionWrapper({
   className = "",
 }: SectionWrapperProps) {
   return (
-    <section id={id} className={`min-h-screen py-24 px-6 relative ${className}`}>
+    <section id={id} className={`relative px-4 py-4 ${className}`}>
       <motion.div
-        initial={{ opacity: 0, y: 40 }}
+        initial={{ opacity: 0, y: 30 }}
         whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 0.7, ease: "easeOut" }}
-        className="max-w-6xl mx-auto"
+        viewport={{ once: true, margin: "-80px" }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+        className="max-w-xl mx-auto"
       >
         {children}
       </motion.div>

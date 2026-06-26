@@ -7,7 +7,6 @@ import { useStore } from "@/store/useStore";
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IconMap = Record<string, React.ComponentType<any>>;
 
-// 动态获取 lucide 图标
 function DynamicIcon({ name, ...props }: { name: string } & React.SVGProps<SVGSVGElement>) {
   const IconComponent = (Icons as unknown as IconMap)[name];
   if (!IconComponent) return <Icons.Code2 {...props} />;
@@ -16,48 +15,49 @@ function DynamicIcon({ name, ...props }: { name: string } & React.SVGProps<SVGSV
 
 export default function SkillsSection() {
   const { data } = useStore();
-
-  // 按分类分组
   const categories = Array.from(new Set(data.skills.map((s) => s.category)));
 
   return (
-    <SectionWrapper id="skills" className="bg-gradient-to-b from-transparent via-accent/[0.02] to-transparent">
-      <div className="flex items-center gap-3 mb-12">
-        <Sparkles size={28} className="text-accent" />
-        <h2 className="font-display text-4xl font-bold text-fg">技能</h2>
-        <div className="flex-1 h-px bg-gradient-to-r from-accent/30 to-transparent" />
-      </div>
-
-      <div className="space-y-10">
-        {categories.map((category, catIdx) => (
-          <div key={category}>
-            <h3 className="text-sm uppercase tracking-widest text-muted mb-4 font-display">
-              {category}
-            </h3>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
-              {data.skills
-                .filter((s) => s.category === category)
-                .map((skill, idx) => (
-                  <motion.div
-                    key={skill.name}
-                    initial={{ opacity: 0, y: 20 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: catIdx * 0.1 + idx * 0.05, duration: 0.4 }}
-                    className="glass glass-hover rounded-xl p-4 flex flex-col items-center gap-2 cursor-default transition-all duration-300 group"
-                  >
-                    <DynamicIcon
-                      name={skill.icon}
-                      className="w-6 h-6 text-muted group-hover:text-accent transition-colors"
-                    />
-                    <span className="text-sm text-fg-dim group-hover:text-fg transition-colors font-medium">
-                      {skill.name}
-                    </span>
-                  </motion.div>
-                ))}
-            </div>
+    <SectionWrapper id="skills">
+      <div className="glass-card glass-shimmer p-6 md:p-8">
+        <div className="flex items-center gap-3 mb-6">
+          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
+            <Sparkles size={18} className="text-[#A58CFF]" />
           </div>
-        ))}
+          <div>
+            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">技能栈</h2>
+            <p className="text-xs text-[rgba(252,220,236,0.4)]">Skills</p>
+          </div>
+        </div>
+
+        <div className="space-y-5">
+          {categories.map((category) => (
+            <div key={category}>
+              <h3 className="text-xs uppercase tracking-widest text-[rgba(252,220,236,0.4)] mb-3 font-display">
+                {category}
+              </h3>
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+                {data.skills
+                  .filter((s) => s.category === category)
+                  .map((skill) => (
+                    <motion.div
+                      key={skill.name}
+                      whileHover={{ y: -3, scale: 1.02 }}
+                      className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,143,187,0.25)] hover:bg-[rgba(255,143,187,0.06)] transition-all cursor-default"
+                    >
+                      <DynamicIcon
+                        name={skill.icon}
+                        className="w-5 h-5 text-[rgba(252,220,236,0.55)] group-hover:text-[#FFB3D1]"
+                      />
+                      <span className="text-[11px] text-[rgba(252,220,236,0.75)] text-center font-medium">
+                        {skill.name}
+                      </span>
+                    </motion.div>
+                  ))}
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </SectionWrapper>
   );

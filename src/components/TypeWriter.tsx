@@ -1,50 +1,33 @@
 import { useState, useEffect } from "react";
 
-interface TypeWriterProps {
-  texts: string[];
-  speed?: number;
-  deleteSpeed?: number;
-  pauseTime?: number;
-}
-
-export default function TypeWriter({
-  texts,
-  speed = 100,
-  deleteSpeed = 50,
-  pauseTime = 2000,
-}: TypeWriterProps) {
+export default function TypeWriter({ texts }: { texts: string[] }) {
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [displayText, setDisplayText] = useState("");
-  const [textIndex, setTextIndex] = useState(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
-    const currentText = texts[textIndex];
-
+    const currentText = texts[currentIndex] || "";
     const timeout = setTimeout(
       () => {
         if (!isDeleting) {
-          setDisplayText(currentText.slice(0, displayText.length + 1));
-          if (displayText.length === currentText.length) {
-            setTimeout(() => setIsDeleting(true), pauseTime);
+          if (displayText.length < currentText.length) {
+            setDisplayText(currentText.slice(0, displayText.length + 1));
+          } else {
+            setTimeout(() => setIsDeleting(true), 1800);
           }
         } else {
-          setDisplayText(currentText.slice(0, displayText.length - 1));
-          if (displayText.length === 0) {
+          if (displayText.length > 0) {
+            setDisplayText(displayText.slice(0, displayText.length - 1));
+          } else {
             setIsDeleting(false);
-            setTextIndex((prev) => (prev + 1) % texts.length);
+            setCurrentIndex((prev) => (prev + 1) % texts.length);
           }
         }
       },
-      isDeleting ? deleteSpeed : speed
+      isDeleting ? 60 : 110
     );
-
     return () => clearTimeout(timeout);
-  }, [displayText, isDeleting, textIndex, texts, speed, deleteSpeed, pauseTime]);
+  }, [displayText, isDeleting, currentIndex, texts]);
 
-  return (
-    <span>
-      {displayText}
-      <span className="typewriter-cursor" />
-    </span>
-  );
+  return <span className="typewriter-cursor">{displayText}</span>;
 }

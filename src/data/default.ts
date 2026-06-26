@@ -56,9 +56,10 @@ export const defaultData: PersonalData = {
     },
   ],
   contact: {
+    description: "欢迎通过邮件或社交媒体与我联系，一起交流技术与创意。",
     email: "Evan816Z@users.noreply.github.com",
     socials: [
-      { platform: "GitHub", url: "https://github.com/Evan816Z", icon: "Github" },
+      { platform: "github", url: "https://github.com/Evan816Z", icon: "Github" },
     ],
   },
 };
