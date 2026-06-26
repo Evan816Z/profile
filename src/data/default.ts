@@ -2,17 +2,17 @@ import type { PersonalData } from "@/types/personal";
 
 export const defaultData: PersonalData = {
   hero: {
-    name: "Evan816",
+    name: "Evan816Z",
     taglines: [
       "开发者",
       "开源爱好者",
       "创意工程师",
       "终身学习者",
     ],
-    avatar: "https://avatars.githubusercontent.com/u/61370109?v=4",
+    avatar: "https://avatars.githubusercontent.com/u/180733710?v=4",
   },
   about: {
-    bio: "你好！我是 Evan816，一名热爱技术的开发者，专注于构建优雅且高性能的 Web 应用。我相信代码不仅是工具，更是表达创意的媒介。在工作之余，我喜欢探索新技术、参与开源项目，以及分享我的知识与经验。",
+    bio: "你好！我是 Evan816Z，一名热爱技术的开发者，专注于构建优雅且高性能的 Web 应用。我相信代码不仅是工具，更是表达创意的媒介。在工作之余，我喜欢探索新技术、参与开源项目，以及分享我的知识与经验。",
     location: "地球上的某个角落",
   },
   skills: [
@@ -56,9 +56,9 @@ export const defaultData: PersonalData = {
     },
   ],
   contact: {
-    email: "Evan816@users.noreply.github.com",
+    email: "Evan816Z@users.noreply.github.com",
     socials: [
-      { platform: "GitHub", url: "https://github.com/Evan816", icon: "Github" },
+      { platform: "GitHub", url: "https://github.com/Evan816Z", icon: "Github" },
     ],
   },
 };
