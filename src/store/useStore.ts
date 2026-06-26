@@ -4,7 +4,12 @@ import { defaultData } from "@/data/default";
 
 const STORAGE_KEY = "personal-site-data";
 
+function isClient() {
+  return typeof window !== "undefined";
+}
+
 function loadData(): PersonalData {
+  if (!isClient()) return defaultData;
   try {
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
@@ -17,6 +22,7 @@ function loadData(): PersonalData {
 }
 
 function saveData(data: PersonalData) {
+  if (!isClient()) return;
   localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
 }
 
@@ -41,6 +47,7 @@ export const useStore = create<StoreState>((set) => ({
     set({ data: defaultData });
   },
   exportData: () => {
+    if (!isClient()) return;
     const state = useStore.getState();
     const blob = new Blob([JSON.stringify(state.data, null, 2)], {
       type: "application/json",
