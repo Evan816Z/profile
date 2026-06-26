@@ -69,7 +69,7 @@ export default function ContactSection() {
           Made with <Heart size={14} className="text-accent" /> using React & Tailwind
         </p>
         <a
-          href="/admin"
+          href="#/admin"
           className="inline-block mt-3 text-xs text-muted/40 hover:text-muted transition-colors"
         >
           管理后台
