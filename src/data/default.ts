@@ -32,16 +32,16 @@ export const defaultData: PersonalData = {
   projects: [
     {
       title: "Tinject",
-      description: "开源的 DLL 注入器，支持进程注入与模块管理。",
-      tags: ["Rust", "Windows", "Injection", "Open Source"],
+      description: "开源的DLL注入器。",
+      tags: ["Rust", "Windows", "DLL", "Open Source"],
       link: "https://github.com/Evan816Z/Tinject",
       image: "https://opengraph.githubassets.com/1/Evan816Z/Tinject",
     },
     {
       title: "webcam3",
       description:
-        "多摄像头 Web 采集工具：枚举所有视频输入设备，拍照并上传到本地 Flask 服务器，可配合 ngrok 实现公网 HTTPS 访问。",
-      tags: ["Python", "Flask", "WebRTC", "ngrok"],
+        "Multi-camera web capture: enumerate all video input devices and upload photos to local Flask server. Pairs with ngrok for public HTTPS access.",
+      tags: ["HTML", "Python", "Flask", "WebRTC"],
       link: "https://github.com/Evan816Z/webcam3",
       image: "https://opengraph.githubassets.com/1/Evan816Z/webcam3",
     },
@@ -54,8 +54,8 @@ export const defaultData: PersonalData = {
     },
     {
       title: "profile",
-      description: "基于 React + Vite + TypeScript 构建的个人主页，支持 Admin 后台编辑与 Cloudflare Pages / GitHub Pages 双平台部署。",
-      tags: ["React", "Vite", "TypeScript", "Tailwind"],
+      description: "基于 React + Vite + TypeScript 构建的个人主页，支持 Admin 后台编辑与双平台部署。",
+      tags: ["TypeScript", "React", "Vite", "Tailwind"],
       link: "https://github.com/Evan816Z/profile",
       image: "https://opengraph.githubassets.com/1/Evan816Z/profile",
     },

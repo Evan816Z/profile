@@ -1,5 +1,6 @@
 import { useState } from "react";
 import LiquidGlass from "@/components/LiquidGlass";
+import LiquidGlassFilter from "@/components/LiquidGlassFilter";
 import AdaptiveText from "@/components/AdaptiveText";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -14,6 +15,8 @@ export default function Home() {
 
   return (
     <div className="relative min-h-screen">
+      {/* Runtime physics-based SVG filter for liquid glass refraction */}
+      <LiquidGlassFilter />
       {/* 背景图片：放大填充 */}
       <div
         className="fixed inset-0 z-0"

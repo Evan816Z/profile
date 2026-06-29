@@ -2,18 +2,13 @@ import { motion } from "framer-motion";
 import TypeWriter from "@/components/TypeWriter";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
-import { useResponsiveScale } from "@/hooks/useResponsiveScale";
 
 export default function HeroSection() {
   const { data } = useStore();
-  const scale = useResponsiveScale();
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-8 pb-12">
-      <div
-        className="w-full mx-auto text-center"
-        style={{ maxWidth: `${Math.round(560 * scale)}px` }}
-      >
+      <div className="w-full max-w-lg mx-auto text-center">
         {/* 头像 */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -21,10 +16,7 @@ export default function HeroSection() {
           transition={{ duration: 0.6, type: "spring" }}
           className="mb-6"
         >
-          <div
-            className="mx-auto rounded-full p-1 bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3]"
-            style={{ width: `${Math.round(112 * scale)}px`, height: `${Math.round(112 * scale)}px` }}
-          >
+          <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full p-1 bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3]">
             <div className="w-full h-full rounded-full overflow-hidden bg-[#0E0A1C] p-1">
               <img
                 src={data.hero.avatar}
@@ -44,8 +36,7 @@ export default function HeroSection() {
         >
           <AdaptiveText
             as="h1"
-            className="font-display font-bold tracking-tight"
-            style={{ fontSize: `${Math.round(48 * scale)}px` }}
+            className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight"
           >
             {data.hero.name}
           </AdaptiveText>
@@ -56,8 +47,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="font-body mb-8"
-          style={{ fontSize: `${Math.round(18 * scale)}px` }}
+          className="text-base sm:text-lg font-body mb-8"
         >
           <AdaptiveText className="typewriter-cursor">
             <TypeWriter texts={data.hero.taglines} />
@@ -69,8 +59,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="flex items-center justify-center gap-6"
-          style={{ fontSize: `${Math.round(12 * scale)}px` }}
+          className="flex items-center justify-center gap-6 text-xs"
         >
           <AdaptiveText className="flex items-center gap-1.5">
             <span className="w-1 h-1 rounded-full bg-[#A58CFF]" />
