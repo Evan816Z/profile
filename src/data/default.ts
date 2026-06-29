@@ -9,7 +9,7 @@ export const defaultData: PersonalData = {
       "创意工程师",
       "终身学习者",
     ],
-    avatar: "https://avatars.githubusercontent.com/u/180733710?v=4",
+    avatar: "https://i1.hdslb.com/bfs/face/d0565990416e88acc3ff88bac0f21d8b7d48c6a7.jpg",
   },
   about: {
     bio: "你好！我是 Evan816Z，一名热爱技术的开发者，专注于构建优雅且高性能的 Web 应用。我相信代码不仅是工具，更是表达创意的媒介。在工作之余，我喜欢探索新技术、参与开源项目，以及分享我的知识与经验。",

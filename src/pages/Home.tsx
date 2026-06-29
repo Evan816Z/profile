@@ -1,4 +1,5 @@
 import NebulaBackground from "@/components/NebulaBackground";
+import LiquidGlass from "@/components/LiquidGlass";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
@@ -15,12 +16,11 @@ export default function Home() {
       {/* 顶部导航 */}
       <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
         <div className="max-w-xl mx-auto flex items-center justify-between">
-          <Link
-            to="/admin"
-            className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(20,15,40,0.6)] backdrop-blur-xl border border-[rgba(255,143,187,0.15)] text-xs text-[rgba(252,220,236,0.7)] hover:border-[rgba(255,143,187,0.3)] transition-colors"
-          >
-            <Settings size={13} />
-            管理
+          <Link to="/admin">
+            <LiquidGlass className="gap-2 px-3 py-1.5 text-xs text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]">
+              <Settings size={13} />
+              管理
+            </LiquidGlass>
           </Link>
         </div>
       </header>

@@ -6,17 +6,91 @@ import { Link } from "react-router-dom";
 import type { PersonalData } from "@/types/personal";
 import NebulaBackground from "@/components/NebulaBackground";
 
+const ADMIN_PASSWORD = "Evan816";
+
+function isAuthenticated() {
+  if (typeof window === "undefined") return false;
+  return sessionStorage.getItem("admin-auth") === "1";
+}
+
+function setAuthenticated(value: boolean) {
+  if (typeof window === "undefined") return;
+  if (value) sessionStorage.setItem("admin-auth", "1");
+  else sessionStorage.removeItem("admin-auth");
+}
+
 export default function Admin() {
   const { data, updateData, resetData } = useStore();
   const [formData, setFormData] = useState<PersonalData>(data);
   const [activeTab, setActiveTab] = useState("hero");
   const [showPreview, setShowPreview] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [password, setPassword] = useState("");
+  const [auth, setAuth] = useState(isAuthenticated());
+  const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     setFormData(data);
   }, [data]);
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password === ADMIN_PASSWORD) {
+      setAuthenticated(true);
+      setAuth(true);
+      setError("");
+    } else {
+      setError("密码错误");
+    }
+  };
+
+  if (!auth) {
+    return (
+      <div className="relative min-h-screen">
+        <NebulaBackground />
+        <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
+          <form
+            onSubmit={handleLogin}
+            className="glass-card p-8 w-full max-w-sm space-y-5"
+          >
+            <div className="text-center">
+              <h1 className="font-display text-2xl font-bold text-gradient mb-1">
+                管理员登录
+              </h1>
+              <p className="text-xs text-[rgba(252,220,236,0.4)]">
+                Admin Login
+              </p>
+            </div>
+            <div>
+              <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">
+                密码
+              </label>
+              <input
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="请输入管理员密码"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors"
+              />
+            </div>
+            {error && (
+              <p className="text-xs text-[#FF8FB8] text-center">{error}</p>
+            )}
+            <button type="submit" className="w-full cta-primary">
+              进入后台
+            </button>
+            <Link
+              to="/"
+              className="block text-center text-xs text-[rgba(252,220,236,0.4)] hover:text-[#FFE6F2] transition-colors"
+            >
+              返回主页
+            </Link>
+          </form>
+        </div>
+      </div>
+    );
+  }
 
   const handleChange = (path: string, value: unknown) => {
     setFormData((prev) => {
@@ -174,6 +248,15 @@ export default function Admin() {
           </nav>
 
           <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[rgba(255,255,255,0.06)] space-y-2">
+            <button
+              onClick={() => {
+                setAuthenticated(false);
+                setAuth(false);
+              }}
+              className="flex items-center justify-center gap-2 w-full cta-ghost text-xs"
+            >
+              退出登录
+            </button>
             <Link
               to="/"
               className="flex items-center justify-center gap-2 w-full cta-ghost text-xs"
