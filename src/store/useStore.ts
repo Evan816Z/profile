@@ -3,6 +3,8 @@ import type { PersonalData } from "@/types/personal";
 import { defaultData } from "@/data/default";
 
 const STORAGE_KEY = "personal-site-data";
+const VERSION_KEY = "personal-site-version";
+const DATA_VERSION = "3"; // bump this to force-clear stale localStorage
 
 function isClient() {
   return typeof window !== "undefined";
@@ -11,6 +13,13 @@ function isClient() {
 function loadData(): PersonalData {
   if (!isClient()) return defaultData;
   try {
+    // Force-clear stale cache when data version changes
+    const ver = localStorage.getItem(VERSION_KEY);
+    if (ver !== DATA_VERSION) {
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.setItem(VERSION_KEY, DATA_VERSION);
+      return defaultData;
+    }
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
       return JSON.parse(stored);

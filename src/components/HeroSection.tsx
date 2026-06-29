@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 import TypeWriter from "@/components/TypeWriter";
-import LiquidGlass from "@/components/LiquidGlass";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
@@ -10,24 +8,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-8 pb-12">
-      <div className="w-full max-w-xl mx-auto text-center">
-        {/* 顶部标签 */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-center gap-2 mb-6"
-        >
-          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium">
-            <Sparkles size={12} className="text-[#FFB3D1]" />
-            <AdaptiveText>个人主页</AdaptiveText>
-          </LiquidGlass>
-          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium">
-            <span className="live-dot" />
-            <AdaptiveText>在线</AdaptiveText>
-          </LiquidGlass>
-        </motion.div>
-
+      <div className="w-full max-w-lg mx-auto text-center">
         {/* 头像 */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
@@ -35,12 +16,17 @@ export default function HeroSection() {
           transition={{ duration: 0.6, type: "spring" }}
           className="mb-6"
         >
-          <div className="w-28 h-28 mx-auto rounded-full p-1 bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3]">
+          <div className="w-24 h-24 sm:w-28 sm:h-28 mx-auto rounded-full p-1 bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3]">
             <div className="w-full h-full rounded-full overflow-hidden bg-[#0E0A1C] p-1">
               <img
                 src={data.hero.avatar}
                 alt={data.hero.name}
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
                 className="w-full h-full rounded-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
             </div>
           </div>
@@ -55,7 +41,7 @@ export default function HeroSection() {
         >
           <AdaptiveText
             as="h1"
-            className="font-display text-5xl md:text-6xl font-bold tracking-tight"
+            className="font-display text-4xl sm:text-5xl md:text-6xl font-bold tracking-tight"
           >
             {data.hero.name}
           </AdaptiveText>
@@ -66,7 +52,7 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-lg font-body mb-8"
+          className="text-base sm:text-lg font-body mb-8"
         >
           <AdaptiveText className="typewriter-cursor">
             <TypeWriter texts={data.hero.taglines} />

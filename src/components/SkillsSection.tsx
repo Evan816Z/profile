@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import * as Icons from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
@@ -20,10 +21,10 @@ export default function SkillsSection() {
 
   return (
     <SectionWrapper id="skills">
-      <div className="glass-card glass-shimmer p-6 md:p-8">
+      <GlassCard className="p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
-            <Sparkles size={18} className="text-[#A58CFF]" />
+            <Sparkles size={18} className="text-[#555]" />
           </div>
           <div>
             <AdaptiveText as="h2" className="font-display text-xl font-semibold">
@@ -63,7 +64,7 @@ export default function SkillsSection() {
             </div>
           ))}
         </div>
-      </div>
+      </GlassCard>
     </SectionWrapper>
   );
 }

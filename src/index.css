@@ -34,7 +34,7 @@ body {
   line-height: 1.6;
   font-weight: 400;
   background: var(--bg);
-  color: var(--text-primary);
+  color: #1a1a1a;
   min-height: 100vh;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
@@ -110,18 +110,33 @@ body {
   }
 }
 
-/* 液体玻璃：与 archisvaze/liquid-glass 一致的控件外壳 */
+/* ─── Liquid Glass CSS Variables (archisvaze/liquid-glass 原版) ─── */
+:root {
+  --tint-color: 255, 255, 255;
+  --tint-opacity: 0.12;
+  --shadow-blur: 20px;
+  --shadow-spread: -5px;
+  --shadow-color: rgba(255, 255, 255, 0.45);
+  --outer-shadow-blur: 24px;
+  --glass-radius: 60px;
+}
+
+/* ─── Liquid Glass 控件 (archisvaze/liquid-glass 原版结构) ─── */
 .liquid-glass {
   position: relative;
   isolation: isolate;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 60px;
-  color: #fff;
+  border-radius: 999px;
+  color: #333;
   cursor: pointer;
   touch-action: none;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  padding: 6px 16px;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0px 4px var(--outer-shadow-blur) rgba(0, 0, 0, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
@@ -130,10 +145,7 @@ body {
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
 }
 
-.liquid-glass:hover::before {
-  background-color: rgba(255, 255, 255, 0.22);
-}
-
+/* ::before = 内阴影 + tint 覆盖层 (原版 glassDiv::before) */
 .liquid-glass::before {
   content: '';
   position: absolute;
@@ -141,19 +153,24 @@ body {
   z-index: 1;
   border-radius: inherit;
   pointer-events: none;
-  box-shadow: inset 0 0 20px -5px rgba(255, 255, 255, 0.45);
-  background-color: rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 0 var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
+  background-color: rgba(var(--tint-color), var(--tint-opacity));
   transition: background-color 0.2s ease;
 }
 
+.liquid-glass:hover::before {
+  background-color: rgba(var(--tint-color), 0.12);
+}
+
+/* ::after = backdrop-filter 应用 SVG 液态玻璃滤镜 (原版 glassDiv::after) */
 .liquid-glass::after {
   content: '';
   position: absolute;
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  backdrop-filter: var(--lg-filter, blur(20px) saturate(1.8));
-  -webkit-backdrop-filter: var(--lg-filter, blur(20px) saturate(1.8));
+  backdrop-filter: var(--lg-filter);
+  -webkit-backdrop-filter: var(--lg-filter);
   isolation: isolate;
 }
 
@@ -162,76 +179,52 @@ body {
   z-index: 2;
 }
 
-.liquid-glass-svg {
-  position: absolute;
-  width: 0;
-  height: 0;
-  overflow: hidden;
+/* 兼容模式回退：不用 SVG filter，用 blur */
+.liquid-glass[data-mode="compatible"]::after {
+  backdrop-filter: blur(20px) saturate(1.8);
+  -webkit-backdrop-filter: blur(20px) saturate(1.8);
 }
 
-/* 玻璃态卡片 */
+/* ─── Glass Card 液态玻璃卡片 (同 archisvaze/liquid-glass glassDiv 结构) ─── */
 .glass-card {
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(26px) saturate(1.9);
-  -webkit-backdrop-filter: blur(26px) saturate(1.9);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 24px;
-  box-shadow:
-    0 20px 40px rgba(0, 0, 0, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.14);
   position: relative;
+  border-radius: 24px;
   overflow: hidden;
+  isolation: isolate;
+  box-shadow: 0px 4px var(--outer-shadow-blur) rgba(0, 0, 0, 0.18);
 }
 
+/* ::before = 内阴影 + tint (原版 glassDiv::before) */
 .glass-card::before {
   content: "";
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(120% 60% at 50% 0%, rgba(255, 255, 255, 0.14), transparent 55%),
-    radial-gradient(90% 50% at 50% -10%, rgba(255, 143, 187, 0.12), transparent 55%);
+  z-index: 1;
+  border-radius: inherit;
   pointer-events: none;
+  box-shadow: inset 0 0 var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
+  background-color: rgba(var(--tint-color), var(--tint-opacity));
+}
+
+/* ::after = backdrop-filter 应用 SVG 液态玻璃滤镜 (原版 glassDiv::after) */
+.glass-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  backdrop-filter: var(--lg-filter);
+  -webkit-backdrop-filter: var(--lg-filter);
+  isolation: isolate;
 }
 
 .glass-card-hover {
-  transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, background-color 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .glass-card-hover:hover {
   transform: translateY(-4px);
-  background: rgba(255, 255, 255, 0.14);
-  box-shadow:
-    0 28px 56px rgba(0, 0, 0, 0.25),
-    0 0 40px rgba(255, 143, 187, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.12);
-  border-color: rgba(255, 143, 187, 0.24);
-}
-
-/* 玻璃闪光 */
-.glass-shimmer::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 50%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    rgba(255, 255, 255, 0.05),
-    transparent
-  );
-  animation: glassShimmer 5s ease-in-out infinite;
-  pointer-events: none;
-}
-
-@keyframes glassShimmer {
-  0%, 100% {
-    left: -100%;
-  }
-  50% {
-    left: 150%;
-  }
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
 }
 
 /* 渐变文字 */
