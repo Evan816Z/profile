@@ -44,11 +44,9 @@ export default function GlassCard({
     let timer: ReturnType<typeof setTimeout>;
     const onResize = () => {
       clearTimeout(timer);
-      timer = setTimeout(updateFilter, 150);
+      timer = setTimeout(updateFilter, 300);
     };
     window.addEventListener("resize", onResize);
-
-    const raf = requestAnimationFrame(() => requestAnimationFrame(updateFilter));
 
     return () => {
       cancelAnimationFrame(raf);

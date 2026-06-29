@@ -1,22 +1,16 @@
-import { useState } from "react";
 import LiquidGlass from "@/components/LiquidGlass";
-import LiquidGlassFilter from "@/components/LiquidGlassFilter";
 import AdaptiveText from "@/components/AdaptiveText";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
-import { Settings, Droplets } from "lucide-react";
+import { Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  const [mode, setMode] = useState<"pure" | "compatible">("pure");
-
   return (
     <div className="relative min-h-screen">
-      {/* Runtime physics-based SVG filter for liquid glass refraction */}
-      <LiquidGlassFilter />
       {/* 背景图片：放大填充 */}
       <div
         className="fixed inset-0 z-0"
@@ -38,25 +32,11 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <Link to="/admin">
-            <LiquidGlass className="gap-2 px-3 py-1.5 text-xs text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]" mode={mode}>
+            <LiquidGlass className="gap-2 px-3 py-1.5 text-xs text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]">
               <Settings size={13} />
               管理
             </LiquidGlass>
           </Link>
-
-          {/* 纯净/兼容模式切换 */}
-          <LiquidGlass
-            className="gap-2 px-3 py-1.5 text-xs cursor-pointer select-none"
-            mode={mode}
-          >
-            <button
-              onClick={() => setMode(mode === "pure" ? "compatible" : "pure")}
-              className="flex items-center gap-1.5 text-[rgba(252,220,236,0.8)] hover:text-[#FFE6F2] transition-colors"
-            >
-              <Droplets size={12} />
-              <span>{mode === "pure" ? "纯净" : "兼容"}</span>
-            </button>
-          </LiquidGlass>
         </div>
       </header>
 

@@ -113,12 +113,12 @@ body {
 /* ─── Liquid Glass CSS Variables (archisvaze/liquid-glass 原版) ─── */
 :root {
   --tint-color: 255, 255, 255;
-  --tint-opacity: 0.12;
+  --tint-opacity: 0.7;
   --shadow-blur: 20px;
   --shadow-spread: -5px;
   --shadow-color: rgba(255, 255, 255, 0.45);
   --outer-shadow-blur: 24px;
-  --glass-radius: 60px;
+  --glass-radius: 999px;
 }
 
 /* ─── Liquid Glass 控件 (archisvaze/liquid-glass 原版结构) ─── */
