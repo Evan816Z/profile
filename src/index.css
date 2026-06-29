@@ -113,7 +113,7 @@ body {
 /* ─── Liquid Glass CSS Variables (archisvaze/liquid-glass 原版) ─── */
 :root {
   --tint-color: 255, 255, 255;
-  --tint-opacity: 0.06;
+  --tint-opacity: 0.12;
   --shadow-blur: 20px;
   --shadow-spread: -5px;
   --shadow-color: rgba(255, 255, 255, 0.45);
@@ -169,8 +169,8 @@ body {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  backdrop-filter: url(#liquid-glass-filter);
-  -webkit-backdrop-filter: url(#liquid-glass-filter);
+  backdrop-filter: var(--lg-filter);
+  -webkit-backdrop-filter: var(--lg-filter);
   isolation: isolate;
 }
 
@@ -213,8 +213,8 @@ body {
   inset: 0;
   z-index: -1;
   border-radius: inherit;
-  backdrop-filter: url(#liquid-glass-filter);
-  -webkit-backdrop-filter: url(#liquid-glass-filter);
+  backdrop-filter: var(--lg-filter);
+  -webkit-backdrop-filter: var(--lg-filter);
   isolation: isolate;
 }
 

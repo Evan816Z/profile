@@ -26,6 +26,12 @@ export default function Home() {
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
         }}
+        aria-hidden="true"
+      />
+      {/* 背景加载失败时的兜底：深色渐变 */}
+      <div
+        className="fixed inset-0 z-[-1] bg-gradient-to-br from-[#0E0A1C] via-[#15102A] to-[#0E0A1C]"
+        aria-hidden="true"
       />
 
       {/* 顶部导航 */}

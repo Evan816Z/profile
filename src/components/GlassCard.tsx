@@ -1,42 +1,37 @@
 import { useEffect, useRef, useId, type ReactNode, useState } from "react";
-import { registerLiquidGlassFilter, unregisterLiquidGlassFilter } from "@/components/LiquidGlassFilter";
+import {
+  registerLiquidGlassFilter,
+  unregisterLiquidGlassFilter,
+} from "@/components/LiquidGlassFilter";
 
-interface LiquidGlassProps {
+interface GlassCardProps {
   children: ReactNode;
   className?: string;
-  mode?: "pure" | "compatible";
-  borderRadius?: number;
+  hover?: boolean;
 }
 
 /**
- * LiquidGlass — 边缘色散高光 + 中心完全透明
- *
- * 实现方式：
- * - 容器本身无背景色，完全透出下方画布
- * - ::before 用内阴影 + tint 渲染玻璃质感
- * - ::after 通过 CSS 变量引用专属 SVG filter，滤镜尺寸与该元素尺寸/圆角完全匹配
- * - 正文区域无任何位移扭曲
+ * GlassCard — 液态玻璃卡片
+ * 每张卡片在运行时生成专属 SVG filter，尺寸/圆角与卡片完全匹配。
  */
-export default function LiquidGlass({
+export default function GlassCard({
   children,
   className = "",
-  mode = "pure",
-  borderRadius,
-}: LiquidGlassProps) {
-  const isPure = mode === "pure";
+  hover = true,
+}: GlassCardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const baseId = useId().replace(/:/g, "");
   const [filterId, setFilterId] = useState<string | null>(null);
 
   useEffect(() => {
     const el = ref.current;
-    if (!el || !isPure) return;
+    if (!el) return;
 
     const updateFilter = () => {
       const rect = el.getBoundingClientRect();
       const computed = getComputedStyle(el);
-      const br = borderRadius ?? (parseFloat(computed.borderRadius) || 60);
-      const id = `lg-${baseId}`;
+      const br = parseFloat(computed.borderRadius) || 24;
+      const id = `gc-${baseId}`;
       registerLiquidGlassFilter(id, {
         width: Math.max(2, Math.round(rect.width)),
         height: Math.max(2, Math.round(rect.height)),
@@ -53,26 +48,24 @@ export default function LiquidGlass({
     };
     window.addEventListener("resize", onResize);
 
-    // Re-measure after fonts/layout settle
     const raf = requestAnimationFrame(() => requestAnimationFrame(updateFilter));
 
     return () => {
       cancelAnimationFrame(raf);
       clearTimeout(timer);
       window.removeEventListener("resize", onResize);
-      unregisterLiquidGlassFilter(`lg-${baseId}`);
+      unregisterLiquidGlassFilter(`gc-${baseId}`);
     };
-  }, [baseId, isPure, borderRadius]);
+  }, [baseId]);
 
-  const style: React.CSSProperties = isPure
-    ? { ["--lg-filter" as string]: filterId ? `url(#${filterId})` : "none" }
-    : {};
+  const style: React.CSSProperties = {
+    ["--lg-filter" as string]: filterId ? `url(#${filterId})` : "none",
+  };
 
   return (
     <div
       ref={ref}
-      className={`liquid-glass ${className}`}
-      data-mode={isPure ? "pure" : "compatible"}
+      className={`glass-card ${hover ? "glass-card-hover" : ""} ${className}`}
       style={style}
     >
       {children}

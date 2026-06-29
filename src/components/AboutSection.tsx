@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { MapPin, User } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
@@ -16,7 +17,7 @@ export default function AboutSection() {
 
   return (
     <SectionWrapper id="about">
-      <div className="glass-card p-6 md:p-8">
+      <GlassCard className="p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
             <User size={18} className="text-[#555]" />
@@ -50,7 +51,7 @@ export default function AboutSection() {
             </button>
           </div>
         </div>
-      </div>
+      </GlassCard>
     </SectionWrapper>
   );
 }

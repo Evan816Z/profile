@@ -21,7 +21,12 @@ export default function HeroSection() {
               <img
                 src={data.hero.avatar}
                 alt={data.hero.name}
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
                 className="w-full h-full rounded-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
               />
             </div>
           </div>

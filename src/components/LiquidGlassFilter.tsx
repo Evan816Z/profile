@@ -9,9 +9,10 @@ import { useEffect, useRef, useCallback } from "react";
  *  - Specular highlights at glass bezel
  *  - Gaussian blur of source
  *
- * The filter is injected into a hidden <svg> element and referenced
- * by `.liquid-glass::after` and `.glass-card::after` via
- * `backdrop-filter: url(#liquid-glass-filter)`.
+ * This module exports both a global SVG defs provider and the
+ * rebuildFilter() helper. Individual glass elements register their
+ * own filters via registerLiquidGlassFilter() so each element gets a
+ * filter sized exactly to its bounding box and border-radius.
  */
 
 /* ─── Surface profile functions ─── */
@@ -69,7 +70,6 @@ function generateDisplacementMap(
   const img = ctx.createImageData(w, h);
   const d = img.data;
 
-  // Fill with neutral (128,128) = no displacement
   for (let i = 0; i < d.length; i += 4) {
     d[i] = 128;
     d[i + 1] = 128;
@@ -197,6 +197,7 @@ export const DEFAULT_PARAMS: LiquidGlassParams = {
 
 /* ─── Build SVG filter string ─── */
 function buildFilter(
+  id: string,
   params: LiquidGlassParams,
   profile: Float64Array,
   maxDisp: number,
@@ -206,7 +207,7 @@ function buildFilter(
   const { blurAmount, scaleRatio, specularSaturation, specularOpacity, width: w, height: h } = params;
   const scale = maxDisp * scaleRatio;
 
-  return `<filter id="liquid-glass-filter" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+  return `<filter id="${id}" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
   <feGaussianBlur in="SourceGraphic" stdDeviation="${blurAmount}" result="blurred_source" />
   <feImage href="${dispUrl}" x="0" y="0" width="${w}" height="${h}" result="disp_map" />
   <feDisplacementMap in="blurred_source" in2="disp_map" scale="${scale}" xChannelSelector="R" yChannelSelector="G" result="displaced" />
@@ -222,7 +223,7 @@ function buildFilter(
 }
 
 /* ─── Full rebuild pipeline ─── */
-export function rebuildFilter(params: LiquidGlassParams): string {
+export function rebuildFilter(id: string, params: LiquidGlassParams): string {
   const heightFn = SURFACE_FNS.convex_squircle;
   const clampedBezel = Math.min(
     params.bezelWidth,
@@ -252,42 +253,42 @@ export function rebuildFilter(params: LiquidGlassParams): string {
     params.borderRadius,
     clampedBezel * 2.5
   );
-  return buildFilter(params, profile, maxDisp, dispUrl, specUrl);
+  return buildFilter(id, params, profile, maxDisp, dispUrl, specUrl);
 }
 
-/* ─── React Component ─── */
-interface LiquidGlassFilterProps {
-  params?: Partial<LiquidGlassParams>;
+/* ─── Global defs registry ─── */
+let defsEl: SVGDefsElement | null = null;
+const registeredFilters = new Map<string, string>();
+
+export function registerLiquidGlassFilter(
+  id: string,
+  params: Partial<LiquidGlassParams>
+) {
+  if (!defsEl) return;
+  const fullParams = { ...DEFAULT_PARAMS, ...params };
+  const filterStr = rebuildFilter(id, fullParams);
+  registeredFilters.set(id, filterStr);
+  renderDefs();
 }
 
-export default function LiquidGlassFilter({ params: userParams }: LiquidGlassFilterProps) {
+export function unregisterLiquidGlassFilter(id: string) {
+  registeredFilters.delete(id);
+  renderDefs();
+}
+
+function renderDefs() {
+  if (!defsEl) return;
+  defsEl.innerHTML = Array.from(registeredFilters.values()).join("\n");
+}
+
+/* ─── React Component: global SVG defs host ─── */
+export default function LiquidGlassFilter() {
   const svgRef = useRef<SVGSVGElement>(null);
-  const params = { ...DEFAULT_PARAMS, ...userParams };
-
-  const doRebuild = useCallback(() => {
-    if (!svgRef.current) return;
-    const defs = svgRef.current.querySelector("#svg-defs");
-    if (!defs) return;
-    const filterStr = rebuildFilter(params);
-    defs.innerHTML = filterStr;
-  }, [params]);
 
   useEffect(() => {
-    // Build on mount
-    const raf = requestAnimationFrame(() => requestAnimationFrame(doRebuild));
-    // Rebuild on resize (debounced)
-    let timer: ReturnType<typeof setTimeout>;
-    const onResize = () => {
-      clearTimeout(timer);
-      timer = setTimeout(doRebuild, 150);
-    };
-    window.addEventListener("resize", onResize);
-    return () => {
-      cancelAnimationFrame(raf);
-      clearTimeout(timer);
-      window.removeEventListener("resize", onResize);
-    };
-  }, [doRebuild]);
+    defsEl = svgRef.current?.querySelector("#svg-defs") ?? null;
+    renderDefs();
+  }, []);
 
   return (
     <svg
