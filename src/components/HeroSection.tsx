@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import TypeWriter from "@/components/TypeWriter";
 import LiquidGlass from "@/components/LiquidGlass";
+import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
 export default function HeroSection() {
@@ -17,13 +18,13 @@ export default function HeroSection() {
           transition={{ duration: 0.5 }}
           className="flex items-center justify-center gap-2 mb-6"
         >
-          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium text-[rgba(252,220,236,0.85)]">
+          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium">
             <Sparkles size={12} className="text-[#FFB3D1]" />
-            个人主页
+            <AdaptiveText>个人主页</AdaptiveText>
           </LiquidGlass>
-          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium text-[rgba(252,220,236,0.85)]">
+          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium">
             <span className="live-dot" />
-            在线
+            <AdaptiveText>在线</AdaptiveText>
           </LiquidGlass>
         </motion.div>
 
@@ -46,23 +47,30 @@ export default function HeroSection() {
         </motion.div>
 
         {/* 姓名 */}
-        <motion.h1
+        <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.2, duration: 0.6 }}
-          className="font-display text-5xl md:text-6xl font-bold mb-4 text-gradient tracking-tight"
+          className="mb-4"
         >
-          {data.hero.name}
-        </motion.h1>
+          <AdaptiveText
+            as="h1"
+            className="font-display text-5xl md:text-6xl font-bold tracking-tight"
+          >
+            {data.hero.name}
+          </AdaptiveText>
+        </motion.div>
 
         {/* 打字机标语 */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.5 }}
-          className="text-lg text-[rgba(252,220,236,0.6)] font-body mb-8"
+          className="text-lg font-body mb-8"
         >
-          <TypeWriter texts={data.hero.taglines} />
+          <AdaptiveText className="typewriter-cursor">
+            <TypeWriter texts={data.hero.taglines} />
+          </AdaptiveText>
         </motion.div>
 
         {/* 特性小字 */}
@@ -70,16 +78,16 @@ export default function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="flex items-center justify-center gap-6 text-xs text-[rgba(252,220,236,0.4)]"
+          className="flex items-center justify-center gap-6 text-xs"
         >
-          <span className="flex items-center gap-1.5">
+          <AdaptiveText className="flex items-center gap-1.5">
             <span className="w-1 h-1 rounded-full bg-[#A58CFF]" />
             全栈开发
-          </span>
-          <span className="flex items-center gap-1.5">
+          </AdaptiveText>
+          <AdaptiveText className="flex items-center gap-1.5">
             <span className="w-1 h-1 rounded-full bg-[#5B8FE3]" />
             开源贡献
-          </span>
+          </AdaptiveText>
         </motion.div>
       </div>
     </section>

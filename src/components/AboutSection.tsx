@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { MapPin, User } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
 function scrollTo(id: string) {
@@ -21,27 +22,31 @@ export default function AboutSection() {
             <User size={18} className="text-[#FFB3D1]" />
           </div>
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">关于我</h2>
-            <p className="text-xs text-[rgba(252,220,236,0.4)]">About Me</p>
+            <AdaptiveText as="h2" className="font-display text-xl font-semibold">
+              关于我
+            </AdaptiveText>
+            <AdaptiveText className="text-xs text-[rgba(252,220,236,0.4)]">
+              About Me
+            </AdaptiveText>
           </div>
         </div>
 
         <div className="space-y-5">
-          <p className="text-[15px] leading-relaxed text-[rgba(252,220,236,0.75)]">
+          <AdaptiveText className="text-[15px] leading-relaxed">
             {data.about.bio}
-          </p>
+          </AdaptiveText>
 
-          <div className="flex items-center gap-2 text-sm text-[rgba(252,220,236,0.55)]">
+          <AdaptiveText className="flex items-center gap-2 text-sm">
             <MapPin size={15} className="text-[#FF8FB8]" />
             {data.about.location}
-          </div>
+          </AdaptiveText>
 
           <div className="flex flex-wrap gap-3 pt-2">
             <button onClick={() => scrollTo("contact")} className="cta-primary">
-              联系我
+              <AdaptiveText>联系我</AdaptiveText>
             </button>
             <button onClick={() => scrollTo("projects")} className="cta-ghost">
-              查看项目
+              <AdaptiveText>查看项目</AdaptiveText>
             </button>
           </div>
         </div>

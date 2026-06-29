@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Mail, MessageCircle, Send, ExternalLink } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
 const iconMap: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
@@ -39,14 +40,18 @@ export default function ContactSection() {
             <MessageCircle size={18} className="text-[#FF8FB8]" />
           </div>
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">联系方式</h2>
-            <p className="text-xs text-[rgba(252,220,236,0.4)]">Get in Touch</p>
+            <AdaptiveText as="h2" className="font-display text-xl font-semibold">
+              联系方式
+            </AdaptiveText>
+            <AdaptiveText className="text-xs text-[rgba(252,220,236,0.4)]">
+              Get in Touch
+            </AdaptiveText>
           </div>
         </div>
 
-        <p className="text-sm text-[rgba(252,220,236,0.6)] mb-6 leading-relaxed">
+        <AdaptiveText className="text-sm mb-6 leading-relaxed block">
           {data.contact.description}
-        </p>
+        </AdaptiveText>
 
         <div className="space-y-3 mb-6">
           <a
@@ -55,13 +60,13 @@ export default function ContactSection() {
           >
             <div className="flex items-center gap-3">
               <Mail size={16} className="text-[#FFB3D1]" />
-              <span className="text-sm text-[rgba(252,220,236,0.9)] font-mono">
+              <AdaptiveText className="text-sm font-mono">
                 {data.contact.email}
-              </span>
+              </AdaptiveText>
             </div>
-            <span className="text-xs text-[#FFB3D1] font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            <AdaptiveText className="text-xs font-medium opacity-0 group-hover:opacity-100 transition-opacity">
               发送邮件
-            </span>
+            </AdaptiveText>
           </a>
         </div>
 
@@ -80,9 +85,9 @@ export default function ContactSection() {
                 size={20}
                 className="text-[rgba(252,220,236,0.55)]"
               />
-              <span className="text-[10px] text-[rgba(252,220,236,0.65)] capitalize">
+              <AdaptiveText className="text-[10px] capitalize">
                 {social.platform}
-              </span>
+              </AdaptiveText>
             </motion.a>
           ))}
         </div>

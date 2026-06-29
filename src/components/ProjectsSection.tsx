@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FolderGit2, ExternalLink } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
 export default function ProjectsSection() {
@@ -14,8 +15,12 @@ export default function ProjectsSection() {
             <FolderGit2 size={18} className="text-[#5B8FE3]" />
           </div>
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">项目作品</h2>
-            <p className="text-xs text-[rgba(252,220,236,0.4)]">Projects</p>
+            <AdaptiveText as="h2" className="font-display text-xl font-semibold">
+              项目作品
+            </AdaptiveText>
+            <AdaptiveText className="text-xs text-[rgba(252,220,236,0.4)]">
+              Projects
+            </AdaptiveText>
           </div>
         </div>
 
@@ -46,20 +51,23 @@ export default function ProjectsSection() {
               </div>
 
               <div className="p-4">
-                <h3 className="font-display text-base font-semibold text-[#FFE6F2] mb-1.5 group-hover:text-[#FFB3D1] transition-colors">
+                <AdaptiveText
+                  as="h3"
+                  className="font-display text-base font-semibold mb-1.5 group-hover:text-[#FFB3D1] transition-colors"
+                >
                   {project.title}
-                </h3>
-                <p className="text-xs text-[rgba(252,220,236,0.55)] mb-3 line-clamp-2">
+                </AdaptiveText>
+                <AdaptiveText className="text-xs mb-3 line-clamp-2">
                   {project.description}
-                </p>
+                </AdaptiveText>
                 <div className="flex flex-wrap gap-1.5">
                   {project.tags.map((tag) => (
-                    <span
+                    <AdaptiveText
                       key={tag}
-                      className="text-[10px] px-2 py-1 rounded-full bg-[rgba(165,140,255,0.12)] text-[#A58CFF] font-medium border border-[rgba(165,140,255,0.2)]"
+                      className="text-[10px] px-2 py-1 rounded-full bg-[rgba(165,140,255,0.12)] font-medium border border-[rgba(165,140,255,0.2)]"
                     >
                       {tag}
-                    </span>
+                    </AdaptiveText>
                   ))}
                 </div>
               </div>

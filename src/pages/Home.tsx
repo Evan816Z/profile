@@ -1,4 +1,5 @@
 import LiquidGlass from "@/components/LiquidGlass";
+import AdaptiveText from "@/components/AdaptiveText";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
@@ -43,10 +44,10 @@ export default function Home() {
 
       {/* 底部装饰 */}
       <footer className="relative z-10 py-8 text-center">
-        <p className="text-xs text-[rgba(252,220,236,0.5)] drop-shadow">
+        <AdaptiveText className="text-xs">
           © {new Date().getFullYear()} Evan816Z · Crafted with
           <span className="text-[#FF8FB8] mx-1">♥</span>
-        </p>
+        </AdaptiveText>
       </footer>
     </div>
   );

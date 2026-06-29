@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import * as Icons from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
+import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -25,17 +26,21 @@ export default function SkillsSection() {
             <Sparkles size={18} className="text-[#A58CFF]" />
           </div>
           <div>
-            <h2 className="font-display text-xl font-semibold text-[#FFE6F2]">技能栈</h2>
-            <p className="text-xs text-[rgba(252,220,236,0.4)]">Skills</p>
+            <AdaptiveText as="h2" className="font-display text-xl font-semibold">
+              技能栈
+            </AdaptiveText>
+            <AdaptiveText className="text-xs text-[rgba(252,220,236,0.4)]">
+              Skills
+            </AdaptiveText>
           </div>
         </div>
 
         <div className="space-y-5">
           {categories.map((category) => (
             <div key={category}>
-              <h3 className="text-xs uppercase tracking-widest text-[rgba(252,220,236,0.4)] mb-3 font-display">
+              <AdaptiveText className="text-xs uppercase tracking-widest text-[rgba(252,220,236,0.4)] mb-3 font-display">
                 {category}
-              </h3>
+              </AdaptiveText>
               <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
                 {data.skills
                   .filter((s) => s.category === category)
@@ -49,9 +54,9 @@ export default function SkillsSection() {
                         name={skill.icon}
                         className="w-5 h-5 text-[rgba(252,220,236,0.55)] group-hover:text-[#FFB3D1]"
                       />
-                      <span className="text-[11px] text-[rgba(252,220,236,0.75)] text-center font-medium">
+                      <AdaptiveText className="text-[11px] text-center font-medium">
                         {skill.name}
-                      </span>
+                      </AdaptiveText>
                     </motion.div>
                   ))}
               </div>
