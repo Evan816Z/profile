@@ -4,6 +4,7 @@ import * as Icons from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
+import { useResponsiveScale } from "@/hooks/useResponsiveScale";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IconMap = Record<string, React.ComponentType<any>>;
@@ -16,7 +17,9 @@ function DynamicIcon({ name, ...props }: { name: string } & React.SVGProps<SVGSV
 
 export default function SkillsSection() {
   const { data } = useStore();
+  const scale = useResponsiveScale();
   const categories = Array.from(new Set(data.skills.map((s) => s.category)));
+  const cols = scale < 0.8 ? 2 : scale < 1.0 ? 3 : 4;
 
   return (
     <SectionWrapper id="skills">
@@ -41,7 +44,7 @@ export default function SkillsSection() {
               <AdaptiveText className="text-xs uppercase tracking-widest text-[rgba(252,220,236,0.4)] mb-3 font-display">
                 {category}
               </AdaptiveText>
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2.5">
+              <div className={`grid gap-2.5`} style={{ gridTemplateColumns: `repeat(${cols}, minmax(0, 1fr))` }}>
                 {data.skills
                   .filter((s) => s.category === category)
                   .map((skill) => (
