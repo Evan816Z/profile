@@ -31,28 +31,26 @@ export const defaultData: PersonalData = {
   ],
   projects: [
     {
-      title: "智能任务管理器",
-      description:
-        "基于 AI 的任务管理工具，支持自然语言创建任务、智能优先级排序和日程建议。",
-      tags: ["React", "Node.js", "OpenAI", "PostgreSQL"],
-      link: "https://github.com",
-      image: "https://picsum.photos/seed/project1/600/400",
+      title: "Tinject",
+      description: "开源的 DLL 注入器，支持进程注入与模块管理。",
+      tags: ["C++", "Windows", "Injection", "Open Source"],
+      link: "https://github.com/Evan816Z/Tinject",
+      image: "https://opengraph.githubassets.com/1/Evan816Z/Tinject",
     },
     {
-      title: "实时协作白板",
+      title: "webcam3",
       description:
-        "支持多人实时协作的在线白板应用，具备画笔、形状、文字和便签等功能。",
-      tags: ["Vue.js", "WebSocket", "Canvas", "Redis"],
-      link: "https://github.com",
-      image: "https://picsum.photos/seed/project2/600/400",
+        "多摄像头 Web 采集工具：枚举所有视频输入设备，拍照并上传到本地 Flask 服务器，可配合 ngrok 实现公网 HTTPS 访问。",
+      tags: ["Python", "Flask", "WebRTC", "ngrok"],
+      link: "https://github.com/Evan816Z/webcam3",
+      image: "https://opengraph.githubassets.com/1/Evan816Z/webcam3",
     },
     {
-      title: "个人博客系统",
-      description:
-        "基于 Markdown 的静态博客系统，支持暗色主题、文章搜索和 RSS 订阅。",
-      tags: ["Next.js", "MDX", "Tailwind", "Vercel"],
-      link: "https://github.com",
-      image: "https://picsum.photos/seed/project3/600/400",
+      title: "profile",
+      description: "基于 React + Vite + TypeScript 构建的个人主页，支持 Admin 后台编辑与 Cloudflare Pages / GitHub Pages 双平台部署。",
+      tags: ["React", "Vite", "TypeScript", "Tailwind"],
+      link: "https://github.com/Evan816Z/profile",
+      image: "https://opengraph.githubassets.com/1/Evan816Z/profile",
     },
   ],
   contact: {
