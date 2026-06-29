@@ -1,7 +1,5 @@
 import { motion } from "framer-motion";
-import { Sparkles } from "lucide-react";
 import TypeWriter from "@/components/TypeWriter";
-import LiquidGlass from "@/components/LiquidGlass";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
 
@@ -11,23 +9,6 @@ export default function HeroSection() {
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-8 pb-12">
       <div className="w-full max-w-xl mx-auto text-center">
-        {/* 顶部标签 */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex items-center justify-center gap-2 mb-6"
-        >
-          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium">
-            <Sparkles size={12} className="text-[#FFB3D1]" />
-            <AdaptiveText>个人主页</AdaptiveText>
-          </LiquidGlass>
-          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium">
-            <span className="live-dot" />
-            <AdaptiveText>在线</AdaptiveText>
-          </LiquidGlass>
-        </motion.div>
-
         {/* 头像 */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}
