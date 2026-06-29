@@ -49,7 +49,6 @@ export default function GlassCard({
     window.addEventListener("resize", onResize);
 
     return () => {
-      cancelAnimationFrame(raf);
       clearTimeout(timer);
       window.removeEventListener("resize", onResize);
       unregisterLiquidGlassFilter(`gc-${baseId}`);
