@@ -1,9 +1,18 @@
-import { useEffect, useRef, useId, type ReactNode } from "react";
+import { useEffect, useRef, useId, useState, type ReactNode } from "react";
 
 interface LiquidGlassProps {
   children: ReactNode;
   className?: string;
 }
+
+/* ── 检测是否为 Safari / iOS（feImage+dataURL 不工作） ── */
+function isSafariLike(): boolean {
+  if (typeof navigator === "undefined") return false;
+  const ua = navigator.userAgent;
+  return /iP(hone|ad|od)|Safari/.test(ua) && !/Chrome|CriOS|Fxios/.test(ua);
+}
+
+const SKIP_SVG_FILTER = isSafariLike();
 
 let instanceCounter = 0;
 
@@ -167,54 +176,66 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
   const timerRef = useRef<number | null>(null);
   const instanceId = useId().replace(/:/g, "") + ++instanceCounter;
   const filterId = `liquid-glass-filter-${instanceId}`;
+  const [useFallback, setUseFallback] = useState(SKIP_SVG_FILTER);
 
   useEffect(() => {
+    /* Safari/iOS: feImage+dataURL 不工作，直接用 CSS backdrop-filter */
+    if (SKIP_SVG_FILTER) {
+      setUseFallback(true);
+      return;
+    }
+
     const wrapper = wrapperRef.current;
     const defs = defsRef.current;
     if (!wrapper || !defs) return;
 
     const build = () => {
-      const rect = wrapper.getBoundingClientRect();
-      const w = Math.max(Math.round(rect.width), 2);
-      const h = Math.max(Math.round(rect.height), 2);
-      if (w < 2 || h < 2) return;
+      try {
+        const rect = wrapper.getBoundingClientRect();
+        const w = Math.max(Math.round(rect.width), 2);
+        const h = Math.max(Math.round(rect.height), 2);
+        if (w < 2 || h < 2) return;
 
-      // 与 archisvaze/liquid-glass 默认值保持一致
-      const surfaceKey = "convex_squircle" as keyof typeof SURFACE_FNS;
-      const glassThick = 80;
-      const bezelW = 60;
-      const ior = 3.0;
-      const scaleRatio = 1.0;
-      const blurAmt = 0.3;
-      const specOpacity = 0.5;
-      const specSat = 4;
-      const radius = Math.min(60, Math.min(w, h) / 2 - 1);
+        /* 与 archisvaze/liquid-glass 默认值保持一致 */
+        const surfaceKey = "convex_squircle" as keyof typeof SURFACE_FNS;
+        const glassThick = 80;
+        const bezelW = 60;
+        const ior = 3.0;
+        const scaleRatio = 1.0;
+        const blurAmt = 0.3;
+        const specOpacity = 0.5;
+        const specSat = 4;
+        const radius = Math.min(60, Math.min(w, h) / 2 - 1);
 
-      const heightFn = SURFACE_FNS[surfaceKey];
-      const clampedBezel = Math.min(bezelW, radius - 1, Math.min(w, h) / 2 - 1);
-      if (clampedBezel <= 0) return;
+        const heightFn = SURFACE_FNS[surfaceKey];
+        const clampedBezel = Math.min(bezelW, radius - 1, Math.min(w, h) / 2 - 1);
+        if (clampedBezel <= 0) return;
 
-      const profile = calculateRefractionProfile(glassThick, clampedBezel, heightFn, ior, 128);
-      const maxDisp = Math.max(...Array.from(profile).map(Math.abs)) || 1;
-      const dispUrl = generateDisplacementMap(w, h, radius, clampedBezel, profile, maxDisp);
-      const specUrl = generateSpecularMap(w, h, radius, clampedBezel * 2.5);
-      const scale = maxDisp * scaleRatio;
+        const profile = calculateRefractionProfile(glassThick, clampedBezel, heightFn, ior, 128);
+        const maxDisp = Math.max(...Array.from(profile).map(Math.abs)) || 1;
+        const dispUrl = generateDisplacementMap(w, h, radius, clampedBezel, profile, maxDisp);
+        const specUrl = generateSpecularMap(w, h, radius, clampedBezel * 2.5);
+        const scale = maxDisp * scaleRatio;
 
-      defs.innerHTML = `
-        <filter id="${filterId}" x="0%" y="0%" width="100%" height="100%">
-          <feGaussianBlur in="SourceGraphic" stdDeviation="${blurAmt}" result="blurred_source" />
-          <feImage href="${dispUrl}" x="0" y="0" width="${w}" height="${h}" result="disp_map" />
-          <feDisplacementMap in="blurred_source" in2="disp_map" scale="${scale}" xChannelSelector="R" yChannelSelector="G" result="displaced" />
-          <feColorMatrix in="displaced" type="saturate" values="${specSat}" result="displaced_sat" />
-          <feImage href="${specUrl}" x="0" y="0" width="${w}" height="${h}" result="spec_layer" />
-          <feComposite in="displaced_sat" in2="spec_layer" operator="in" result="spec_masked" />
-          <feComponentTransfer in="spec_layer" result="spec_faded">
-            <feFuncA type="linear" slope="${specOpacity}" />
-          </feComponentTransfer>
-          <feBlend in="spec_masked" in2="displaced" mode="normal" result="with_sat" />
-          <feBlend in="spec_faded" in2="with_sat" mode="normal" />
-        </filter>
-      `;
+        defs.innerHTML = `
+          <filter id="${filterId}" x="0%" y="0%" width="100%" height="100%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="${blurAmt}" result="blurred_source" />
+            <feImage href="${dispUrl}" x="0" y="0" width="${w}" height="${h}" result="disp_map" />
+            <feDisplacementMap in="blurred_source" in2="disp_map" scale="${scale}" xChannelSelector="R" yChannelSelector="G" result="displaced" />
+            <feColorMatrix in="displaced" type="saturate" values="${specSat}" result="displaced_sat" />
+            <feImage href="${specUrl}" x="0" y="0" width="${w}" height="${h}" result="spec_layer" />
+            <feComposite in="displaced_sat" in2="spec_layer" operator="in" result="spec_masked" />
+            <feComponentTransfer in="spec_layer" result="spec_faded">
+              <feFuncA type="linear" slope="${specOpacity}" />
+            </feComponentTransfer>
+            <feBlend in="spec_masked" in2="displaced" mode="normal" result="with_sat" />
+            <feBlend in="spec_faded" in2="with_sat" mode="normal" />
+          </filter>
+        `;
+      } catch {
+        /* 构建 filter 失败，回退到纯 CSS */
+        setUseFallback(true);
+      }
     };
 
     const schedule = () => {
@@ -238,16 +259,22 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
     <div
       ref={wrapperRef}
       className={`liquid-glass ${className}`}
-      style={{ ["--lg-filter" as string]: `url(#${filterId})` }}
+      style={
+        useFallback
+          ? undefined
+          : { ["--lg-filter" as string]: `url(#${filterId})` }
+      }
     >
       {children}
-      <svg
-        className="liquid-glass-svg"
-        xmlns="http://www.w3.org/2000/svg"
-        color-interpolation-filters="sRGB"
-      >
-        <defs ref={defsRef} />
-      </svg>
+      {!useFallback && (
+        <svg
+          className="liquid-glass-svg"
+          xmlns="http://www.w3.org/2000/svg"
+          color-interpolation-filters="sRGB"
+        >
+          <defs ref={defsRef} />
+        </svg>
+      )}
     </div>
   );
 }

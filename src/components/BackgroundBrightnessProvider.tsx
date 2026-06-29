@@ -34,22 +34,29 @@ export function BackgroundBrightnessProvider({ children }: { children: ReactNode
     const img = new Image();
     img.crossOrigin = "anonymous";
     img.onload = () => {
-      const canvas = document.createElement("canvas");
-      const maxDim = 256;
-      const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-      canvas.width = Math.max(1, Math.round(img.width * scale));
-      canvas.height = Math.max(1, Math.round(img.height * scale));
-      const ctx = canvas.getContext("2d", { willReadFrequently: true });
-      if (!ctx) return;
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-      canvasRef.current = canvas;
-      ctxRef.current = ctx;
-      readyRef.current = true;
-      setReady(true);
-      updateAll();
+      try {
+        const canvas = document.createElement("canvas");
+        const maxDim = 256;
+        const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+        canvas.width = Math.max(1, Math.round(img.width * scale));
+        canvas.height = Math.max(1, Math.round(img.height * scale));
+        const ctx = canvas.getContext("2d", { willReadFrequently: true });
+        if (!ctx) return;
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+        /* 测试是否可以读取像素（CORS 会阻止） */
+        ctx.getImageData(0, 0, 1, 1);
+        canvasRef.current = canvas;
+        ctxRef.current = ctx;
+        readyRef.current = true;
+        setReady(true);
+        updateAll();
+      } catch {
+        /* CORS 受限或 canvas 污染，降级为默认白色文字 */
+        readyRef.current = false;
+        setReady(true);
+      }
     };
     img.onerror = () => {
-      // 加载失败时所有文字默认白色
       readyRef.current = false;
       setReady(true);
     };
@@ -61,36 +68,40 @@ export function BackgroundBrightnessProvider({ children }: { children: ReactNode
     const ctx = ctxRef.current;
     if (!canvas || !ctx || !readyRef.current) return null;
 
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const imgRatio = canvas.width / canvas.height;
-    const vpRatio = vw / vh;
+    try {
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
+      const imgRatio = canvas.width / canvas.height;
+      const vpRatio = vw / vh;
 
-    let dx = 0;
-    let dy = 0;
-    let dw = vw;
-    let dh = vh;
+      let dx = 0;
+      let dy = 0;
+      let dw = vw;
+      let dh = vh;
 
-    if (imgRatio > vpRatio) {
-      dh = vh;
-      dw = dh * imgRatio;
-      dx = (vw - dw) / 2;
-    } else {
-      dw = vw;
-      dh = dw / imgRatio;
-      dy = (vh - dh) / 2;
+      if (imgRatio > vpRatio) {
+        dh = vh;
+        dw = dh * imgRatio;
+        dx = (vw - dw) / 2;
+      } else {
+        dw = vw;
+        dh = dw / imgRatio;
+        dy = (vh - dh) / 2;
+      }
+
+      const u = (x - dx) / dw;
+      const v = (y - dy) / dh;
+      const ix = Math.round(u * canvas.width);
+      const iy = Math.round(v * canvas.height);
+
+      if (ix < 0 || ix >= canvas.width || iy < 0 || iy >= canvas.height) return null;
+
+      const data = ctx.getImageData(ix, iy, 1, 1).data;
+      const luminance = 0.299 * data[0] + 0.587 * data[1] + 0.114 * data[2];
+      return luminance > 128;
+    } catch {
+      return null;
     }
-
-    const u = (x - dx) / dw;
-    const v = (y - dy) / dh;
-    const ix = Math.round(u * canvas.width);
-    const iy = Math.round(v * canvas.height);
-
-    if (ix < 0 || ix >= canvas.width || iy < 0 || iy >= canvas.height) return null;
-
-    const data = ctx.getImageData(ix, iy, 1, 1).data;
-    const luminance = 0.299 * data[0] + 0.587 * data[1] + 0.114 * data[2];
-    return luminance > 128;
   }, []);
 
   const updateAll = useCallback(() => {
