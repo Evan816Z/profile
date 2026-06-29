@@ -20,14 +20,6 @@ export default function Home() {
           backgroundRepeat: "no-repeat",
         }}
       />
-      {/* 暗角与色调叠加，让文字更清晰 */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none"
-        style={{
-          background:
-            "radial-gradient(circle at 50% 30%, rgba(14,10,28,0.35) 0%, rgba(14,10,28,0.75) 100%)",
-        }}
-      />
 
       {/* 顶部导航 */}
       <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
