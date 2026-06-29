@@ -9,10 +9,10 @@ export default function ProjectsSection() {
 
   return (
     <SectionWrapper id="projects">
-      <div className="glass-card glass-shimmer p-6 md:p-8">
+      <div className="glass-card p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
-            <FolderGit2 size={18} className="text-[#5B8FE3]" />
+            <FolderGit2 size={18} className="text-[#555]" />
           </div>
           <div>
             <AdaptiveText as="h2" className="font-display text-xl font-semibold">

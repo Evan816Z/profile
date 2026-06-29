@@ -34,10 +34,10 @@ export default function ContactSection() {
 
   return (
     <SectionWrapper id="contact" className="pb-32">
-      <div className="glass-card glass-shimmer p-6 md:p-8">
+      <div className="glass-card p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
-            <MessageCircle size={18} className="text-[#FF8FB8]" />
+            <MessageCircle size={18} className="text-[#555]" />
           </div>
           <div>
             <AdaptiveText as="h2" className="font-display text-xl font-semibold">
