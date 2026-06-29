@@ -1,10 +1,26 @@
 import { useState, useRef, useEffect } from "react";
 import { useStore } from "@/store/useStore";
 import { defaultData } from "@/data/default";
-import { ArrowLeft, Save, RotateCcw, Download, Upload, Eye, Menu, X } from "lucide-react";
+import {
+  ArrowLeft,
+  Save,
+  RotateCcw,
+  Download,
+  Upload,
+  Eye,
+  EyeOff,
+  Menu,
+  X,
+  User,
+  Sparkles,
+  FolderGit2,
+  Mail,
+  Layers,
+  Lock,
+} from "lucide-react";
 import { Link } from "react-router-dom";
 import type { PersonalData } from "@/types/personal";
-import NebulaBackground from "@/components/NebulaBackground";
+import AdminPreview from "@/components/AdminPreview";
 
 const ADMIN_PASSWORD = "Evan816";
 
@@ -19,10 +35,20 @@ function setAuthenticated(value: boolean) {
   else sessionStorage.removeItem("admin-auth");
 }
 
+const TABS = [
+  { id: "hero", label: "Hero", icon: User },
+  { id: "about", label: "关于", icon: Layers },
+  { id: "skills", label: "技能", icon: Sparkles },
+  { id: "projects", label: "项目", icon: FolderGit2 },
+  { id: "contact", label: "联系", icon: Mail },
+] as const;
+
+type TabId = (typeof TABS)[number]["id"];
+
 export default function Admin() {
   const { data, updateData, resetData } = useStore();
   const [formData, setFormData] = useState<PersonalData>(data);
-  const [activeTab, setActiveTab] = useState("hero");
+  const [activeTab, setActiveTab] = useState<TabId>("hero");
   const [showPreview, setShowPreview] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -45,53 +71,6 @@ export default function Admin() {
     }
   };
 
-  if (!auth) {
-    return (
-      <div className="relative min-h-screen">
-        <NebulaBackground />
-        <div className="relative z-10 flex min-h-screen items-center justify-center px-4">
-          <form
-            onSubmit={handleLogin}
-            className="glass-card p-8 w-full max-w-sm space-y-5"
-          >
-            <div className="text-center">
-              <h1 className="font-display text-2xl font-bold text-gradient mb-1">
-                管理员登录
-              </h1>
-              <p className="text-xs text-[rgba(252,220,236,0.4)]">
-                Admin Login
-              </p>
-            </div>
-            <div>
-              <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">
-                密码
-              </label>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="请输入管理员密码"
-                className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors"
-              />
-            </div>
-            {error && (
-              <p className="text-xs text-[#FF8FB8] text-center">{error}</p>
-            )}
-            <button type="submit" className="w-full cta-primary">
-              进入后台
-            </button>
-            <Link
-              to="/"
-              className="block text-center text-xs text-[rgba(252,220,236,0.4)] hover:text-[#FFE6F2] transition-colors"
-            >
-              返回主页
-            </Link>
-          </form>
-        </div>
-      </div>
-    );
-  }
-
   const handleChange = (path: string, value: unknown) => {
     setFormData((prev) => {
       const keys = path.split(".");
@@ -108,7 +87,6 @@ export default function Admin() {
 
   const handleSave = () => {
     updateData(formData);
-    alert("保存成功！");
   };
 
   const handleReset = () => {
@@ -119,8 +97,7 @@ export default function Admin() {
   };
 
   const handleExport = () => {
-    const useStoreInstance = useStore.getState();
-    const blob = new Blob([JSON.stringify(useStoreInstance.data, null, 2)], {
+    const blob = new Blob([JSON.stringify(formData, null, 2)], {
       type: "application/json",
     });
     const url = URL.createObjectURL(blob);
@@ -141,7 +118,6 @@ export default function Admin() {
         const parsed = JSON.parse(json) as PersonalData;
         setFormData(parsed);
         updateData(parsed);
-        alert("导入成功！");
       } catch {
         alert("导入失败，请检查 JSON 格式。");
       }
@@ -150,140 +126,193 @@ export default function Admin() {
     e.target.value = "";
   };
 
-  const renderField = (label: string, path: string, type = "text", placeholder = "") => (
-    <div className="mb-4">
-      <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">{label}</label>
-      <input
-        type={type}
-        value={(() => {
-          const keys = path.split(".");
-          let current: Record<string, unknown> = formData as unknown as Record<string, unknown>;
-          for (const key of keys) {
-            current = current[key] as Record<string, unknown>;
-          }
-          return (current as unknown as string) || "";
-        })()}
-        onChange={(e) => handleChange(path, e.target.value)}
-        placeholder={placeholder}
-        className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors"
-      />
-    </div>
-  );
+  const getField = (path: string): string => {
+    const keys = path.split(".");
+    let current: Record<string, unknown> = formData as unknown as Record<string, unknown>;
+    for (const key of keys) {
+      current = current[key] as Record<string, unknown>;
+    }
+    return (current as unknown as string) || "";
+  };
 
-  const renderTextarea = (label: string, path: string, placeholder = "") => (
-    <div className="mb-4">
-      <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">{label}</label>
-      <textarea
-        value={(() => {
-          const keys = path.split(".");
-          let current: Record<string, unknown> = formData as unknown as Record<string, unknown>;
-          for (const key of keys) {
-            current = current[key] as Record<string, unknown>;
-          }
-          return (current as unknown as string) || "";
-        })()}
-        onChange={(e) => handleChange(path, e.target.value)}
-        placeholder={placeholder}
-        rows={4}
-        className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors resize-none"
-      />
-    </div>
-  );
+  const inputClass =
+    "w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.3)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.2)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] focus:bg-[rgba(0,0,0,0.4)] transition-all";
 
-  const tabs = [
-    { id: "hero", label: "Hero", icon: "✦" },
-    { id: "about", label: "关于", icon: "◎" },
-    { id: "skills", label: "技能", icon: "✧" },
-    { id: "projects", label: "项目", icon: "◇" },
-    { id: "contact", label: "联系", icon: "✉" },
-  ];
+  const labelClass = "block text-[11px] font-medium text-[rgba(252,220,236,0.5)] mb-1.5";
 
+  // ─── Login Screen ───
+  if (!auth) {
+    return (
+      <div className="relative min-h-screen flex items-center justify-center px-4">
+        {/* Background */}
+        <div
+          className="fixed inset-0 z-0"
+          style={{
+            backgroundImage: "url(https://t.alcy.cc/moez)",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        />
+        <div className="fixed inset-0 z-0 bg-black/20" />
+
+        <div className="relative z-10 w-full max-w-sm">
+          <div className="glass-card p-8 space-y-6">
+            {/* Logo */}
+            <div className="text-center">
+              <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3] flex items-center justify-center shadow-lg shadow-[rgba(165,140,255,0.25)]">
+                <Lock size={24} className="text-white" />
+              </div>
+              <h1 className="font-display text-xl font-bold text-gradient">
+                管理员登录
+              </h1>
+              <p className="text-[11px] text-[rgba(252,220,236,0.35)] mt-1">
+                Admin Dashboard
+              </p>
+            </div>
+
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div>
+                <label className={labelClass}>密码</label>
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="请输入管理员密码"
+                  className={inputClass}
+                  autoFocus
+                />
+              </div>
+              {error && (
+                <p className="text-[11px] text-[#FF8FB8] text-center bg-[rgba(255,143,187,0.08)] rounded-lg py-2">
+                  {error}
+                </p>
+              )}
+              <button type="submit" className="w-full cta-primary py-3">
+                进入后台
+              </button>
+            </form>
+
+            <Link
+              to="/"
+              className="flex items-center justify-center gap-1.5 text-[11px] text-[rgba(252,220,236,0.35)] hover:text-[#FFE6F2] transition-colors"
+            >
+              <ArrowLeft size={12} />
+              返回主页
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ─── Main Admin ───
   return (
     <div className="relative min-h-screen">
-      <NebulaBackground />
+      {/* Background */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: "url(https://t.alcy.cc/moez)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+      <div className="fixed inset-0 z-0 bg-black/10" />
 
       <div className="relative z-10 flex h-screen overflow-hidden">
-        {/* Sidebar Toggle */}
+        {/* Mobile Toggle */}
         <button
           onClick={() => setSidebarOpen(!sidebarOpen)}
-          className="fixed top-4 left-4 z-50 icon-btn lg:hidden"
+          className="fixed top-4 left-4 z-50 w-9 h-9 rounded-xl flex items-center justify-center bg-[rgba(0,0,0,0.4)] backdrop-blur-xl border border-[rgba(255,255,255,0.1)] text-[rgba(252,220,236,0.7)] hover:text-[#FFE6F2] transition-colors lg:hidden"
         >
-          {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
+          {sidebarOpen ? <X size={16} /> : <Menu size={16} />}
         </button>
+
+        {/* Sidebar Overlay */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
 
         {/* Sidebar */}
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-72 bg-[rgba(14,10,28,0.85)] backdrop-blur-2xl border-r border-[rgba(255,143,187,0.12)] transform transition-transform duration-300 ${
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 flex flex-col bg-[rgba(10,8,20,0.85)] backdrop-blur-2xl border-r border-[rgba(255,255,255,0.06)] transform transition-transform duration-300 ${
             sidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"
           }`}
         >
+          {/* Sidebar Header */}
           <div className="p-5 border-b border-[rgba(255,255,255,0.06)]">
-            <div className="flex items-center gap-3 mb-1">
-              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#FFB3D1] to-[#5B8FE3] flex items-center justify-center text-[#0E0A1C] font-bold text-sm">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3] flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-[rgba(165,140,255,0.2)]">
                 E
               </div>
-              <h1 className="font-display text-lg font-semibold text-[#FFE6F2]">编辑后台</h1>
+              <div>
+                <h1 className="font-display text-sm font-semibold text-[#FFE6F2]">编辑后台</h1>
+                <p className="text-[10px] text-[rgba(252,220,236,0.3)]">Admin Dashboard</p>
+              </div>
             </div>
-            <p className="text-[10px] text-[rgba(252,220,236,0.4)]">Admin Dashboard</p>
           </div>
 
-          <nav className="p-3 space-y-1">
-            {tabs.map((tab) => (
-              <button
-                key={tab.id}
-                onClick={() => {
-                  setActiveTab(tab.id);
-                  setSidebarOpen(false);
-                }}
-                className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
-                  activeTab === tab.id
-                    ? "bg-gradient-to-r from-[rgba(255,179,209,0.2)] to-[rgba(91,143,227,0.15)] text-[#FFE6F2] border border-[rgba(255,143,187,0.25)]"
-                    : "text-[rgba(252,220,236,0.55)] hover:bg-[rgba(255,255,255,0.04)]"
-                }`}
-              >
-                <span className="text-[#FFB3D1]">{tab.icon}</span>
-                {tab.label}
-              </button>
-            ))}
+          {/* Nav */}
+          <nav className="flex-1 p-3 space-y-1 overflow-y-auto">
+            {TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    setActiveTab(tab.id);
+                    setSidebarOpen(false);
+                  }}
+                  className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-[13px] transition-all ${
+                    isActive
+                      ? "bg-gradient-to-r from-[rgba(255,179,209,0.15)] to-[rgba(91,143,227,0.1)] text-[#FFE6F2] border border-[rgba(255,143,187,0.2)] shadow-lg shadow-[rgba(255,143,187,0.06)]"
+                      : "text-[rgba(252,220,236,0.45)] hover:bg-[rgba(255,255,255,0.04)] hover:text-[rgba(252,220,236,0.7)]"
+                  }`}
+                >
+                  <Icon size={15} className={isActive ? "text-[#FFB3D1]" : ""} />
+                  {tab.label}
+                </button>
+              );
+            })}
           </nav>
 
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-[rgba(255,255,255,0.06)] space-y-2">
-            <button
-              onClick={() => {
-                setAuthenticated(false);
-                setAuth(false);
-              }}
-              className="flex items-center justify-center gap-2 w-full cta-ghost text-xs"
-            >
-              退出登录
-            </button>
-            <Link
-              to="/"
-              className="flex items-center justify-center gap-2 w-full cta-ghost text-xs"
-            >
-              <ArrowLeft size={14} />
-              返回主页
-            </Link>
+          {/* Sidebar Footer */}
+          <div className="p-3 border-t border-[rgba(255,255,255,0.06)] space-y-2">
             <div className="flex gap-2">
-              <button onClick={handleSave} className="flex-1 cta-primary text-xs flex items-center justify-center gap-1.5">
-                <Save size={13} />
+              <button
+                onClick={handleSave}
+                className="flex-1 cta-primary text-[11px] flex items-center justify-center gap-1.5 py-2"
+              >
+                <Save size={12} />
                 保存
               </button>
-              <button onClick={handleReset} className="flex-1 cta-ghost text-xs flex items-center justify-center gap-1.5">
-                <RotateCcw size={13} />
+              <button
+                onClick={handleReset}
+                className="flex-1 text-[11px] flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[rgba(252,220,236,0.5)] hover:text-[#FFE6F2] hover:bg-[rgba(255,255,255,0.08)] transition-all"
+              >
+                <RotateCcw size={12} />
                 重置
               </button>
             </div>
             <div className="flex gap-2">
-              <button onClick={handleExport} className="flex-1 cta-ghost text-xs flex items-center justify-center gap-1.5">
-                <Download size={13} />
+              <button
+                onClick={handleExport}
+                className="flex-1 text-[11px] flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[rgba(252,220,236,0.5)] hover:text-[#FFE6F2] hover:bg-[rgba(255,255,255,0.08)] transition-all"
+              >
+                <Download size={12} />
                 导出
               </button>
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="flex-1 cta-ghost text-xs flex items-center justify-center gap-1.5"
+                className="flex-1 text-[11px] flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] text-[rgba(252,220,236,0.5)] hover:text-[#FFE6F2] hover:bg-[rgba(255,255,255,0.08)] transition-all"
               >
-                <Upload size={13} />
+                <Upload size={12} />
                 导入
               </button>
             </div>
@@ -294,32 +323,84 @@ export default function Admin() {
               onChange={handleImport}
               className="hidden"
             />
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={() => {
+                  setAuthenticated(false);
+                  setAuth(false);
+                }}
+                className="flex-1 text-[11px] py-2 rounded-xl border border-[rgba(255,143,187,0.15)] text-[rgba(252,220,236,0.45)] hover:text-[#FFB3D1] hover:border-[rgba(255,143,187,0.3)] transition-all"
+              >
+                退出
+              </button>
+              <Link
+                to="/"
+                className="flex-1 flex items-center justify-center gap-1.5 text-[11px] py-2 rounded-xl border border-[rgba(255,255,255,0.08)] text-[rgba(252,220,236,0.45)] hover:text-[#FFE6F2] hover:bg-[rgba(255,255,255,0.04)] transition-all"
+              >
+                <ArrowLeft size={11} />
+                主页
+              </Link>
+            </div>
           </div>
         </aside>
 
-        {/* Form Area */}
-        <main className="flex-1 flex flex-col min-w-0 bg-[rgba(14,10,28,0.5)]">
-          <div className="flex items-center justify-between px-6 py-4 border-b border-[rgba(255,255,255,0.06)]">
-            <h2 className="font-display text-base font-semibold text-[#FFE6F2]">
-              {tabs.find((t) => t.id === activeTab)?.label}
-            </h2>
+        {/* Main Content */}
+        <main className="flex-1 flex flex-col min-w-0">
+          {/* Top Bar */}
+          <div className="flex items-center justify-between px-5 py-3.5 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(10,8,20,0.4)] backdrop-blur-xl">
+            <div className="flex items-center gap-2.5">
+              {(() => {
+                const tab = TABS.find((t) => t.id === activeTab);
+                if (!tab) return null;
+                const Icon = tab.icon;
+                return (
+                  <>
+                    <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.08)]">
+                      <Icon size={14} className="text-[#FFB3D1]" />
+                    </div>
+                    <h2 className="font-display text-sm font-semibold text-[#FFE6F2]">
+                      {tab.label}
+                    </h2>
+                  </>
+                );
+              })()}
+            </div>
             <button
               onClick={() => setShowPreview(!showPreview)}
-              className="flex items-center gap-1.5 text-xs text-[rgba(252,220,236,0.55)] hover:text-[#FFE6F2] transition-colors"
+              className="flex items-center gap-1.5 text-[11px] text-[rgba(252,220,236,0.4)] hover:text-[#FFE6F2] transition-colors px-2.5 py-1.5 rounded-lg hover:bg-[rgba(255,255,255,0.04)]"
             >
-              <Eye size={14} />
+              {showPreview ? <EyeOff size={13} /> : <Eye size={13} />}
               {showPreview ? "隐藏预览" : "显示预览"}
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto p-6">
-            <div className="max-w-xl mx-auto">
+          {/* Form */}
+          <div className="flex-1 overflow-y-auto p-5">
+            <div className="max-w-lg mx-auto space-y-3">
               {activeTab === "hero" && (
-                <div className="glass-card p-5">
-                  {renderField("姓名", "hero.name", "text", "你的名字")}
-                  {renderField("头像 URL", "hero.avatar", "text", "头像图片链接")}
-                  <div className="mb-4">
-                    <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">标语（每行一个）</label>
+                <div className="glass-card p-5 space-y-4">
+                  <div>
+                    <label className={labelClass}>姓名</label>
+                    <input
+                      type="text"
+                      value={getField("hero.name")}
+                      onChange={(e) => handleChange("hero.name", e.target.value)}
+                      placeholder="你的名字"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>头像 URL</label>
+                    <input
+                      type="text"
+                      value={getField("hero.avatar")}
+                      onChange={(e) => handleChange("hero.avatar", e.target.value)}
+                      placeholder="头像图片链接"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>标语（每行一个）</label>
                     <textarea
                       value={formData.hero.taglines.join("\n")}
                       onChange={(e) =>
@@ -330,30 +411,78 @@ export default function Admin() {
                       }
                       rows={4}
                       placeholder="例如：热爱编程&#10;全栈开发者"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.25)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors resize-none"
+                      className={`${inputClass} resize-none`}
                     />
                   </div>
                 </div>
               )}
 
               {activeTab === "about" && (
-                <div className="glass-card p-5">
-                  {renderTextarea("个人简介", "about.bio", "介绍一下你自己...")}
-                  {renderField("所在地", "about.location", "text", "城市 / 国家")}
+                <div className="glass-card p-5 space-y-4">
+                  <div>
+                    <label className={labelClass}>个人简介</label>
+                    <textarea
+                      value={getField("about.bio")}
+                      onChange={(e) => handleChange("about.bio", e.target.value)}
+                      placeholder="介绍一下你自己..."
+                      rows={5}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>所在地</label>
+                    <input
+                      type="text"
+                      value={getField("about.location")}
+                      onChange={(e) => handleChange("about.location", e.target.value)}
+                      placeholder="城市 / 国家"
+                      className={inputClass}
+                    />
+                  </div>
                 </div>
               )}
 
               {activeTab === "skills" && (
-                <div className="glass-card p-5 space-y-4">
+                <div className="glass-card p-5 space-y-3">
                   {formData.skills.map((skill, index) => (
                     <div
                       key={index}
-                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]"
+                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)] space-y-3"
                     >
-                      <div className="grid grid-cols-3 gap-3 mb-3">
-                        {renderField("技能名称", `skills.${index}.name`)}
-                        {renderField("分类", `skills.${index}.category`)}
-                        {renderField("图标", `skills.${index}.icon`)}
+                      <div className="grid grid-cols-3 gap-3">
+                        <div>
+                          <label className={labelClass}>技能名称</label>
+                          <input
+                            type="text"
+                            value={skill.name}
+                            onChange={(e) =>
+                              handleChange(`skills.${index}.name`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>分类</label>
+                          <input
+                            type="text"
+                            value={skill.category}
+                            onChange={(e) =>
+                              handleChange(`skills.${index}.category`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>图标</label>
+                          <input
+                            type="text"
+                            value={skill.icon}
+                            onChange={(e) =>
+                              handleChange(`skills.${index}.icon`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
                       </div>
                       <button
                         onClick={() =>
@@ -362,7 +491,7 @@ export default function Admin() {
                             formData.skills.filter((_, i) => i !== index)
                           )
                         }
-                        className="text-xs text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
+                        className="text-[11px] text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
                       >
                         删除此项
                       </button>
@@ -375,7 +504,7 @@ export default function Admin() {
                         { name: "新技能", category: "技术", icon: "Code2" },
                       ])
                     }
-                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.3)] text-sm text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
+                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.25)] text-[12px] text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
                   >
                     + 添加技能
                   </button>
@@ -383,18 +512,60 @@ export default function Admin() {
               )}
 
               {activeTab === "projects" && (
-                <div className="glass-card p-5 space-y-4">
+                <div className="glass-card p-5 space-y-3">
                   {formData.projects.map((project, index) => (
                     <div
                       key={index}
-                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]"
+                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)] space-y-3"
                     >
-                      {renderField("项目名称", `projects.${index}.title`)}
-                      {renderTextarea("项目描述", `projects.${index}.description`)}
-                      {renderField("项目链接", `projects.${index}.link`)}
-                      {renderField("封面图片", `projects.${index}.image`)}
-                      <div className="mb-3">
-                        <label className="block text-xs text-[rgba(252,220,236,0.55)] mb-1.5">标签（逗号分隔）</label>
+                      <div>
+                        <label className={labelClass}>项目名称</label>
+                        <input
+                          type="text"
+                          value={project.title}
+                          onChange={(e) =>
+                            handleChange(`projects.${index}.title`, e.target.value)
+                          }
+                          className={inputClass}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelClass}>项目描述</label>
+                        <textarea
+                          value={project.description}
+                          onChange={(e) =>
+                            handleChange(`projects.${index}.description`, e.target.value)
+                          }
+                          rows={3}
+                          className={`${inputClass} resize-none`}
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className={labelClass}>项目链接</label>
+                          <input
+                            type="text"
+                            value={project.link}
+                            onChange={(e) =>
+                              handleChange(`projects.${index}.link`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>封面图片</label>
+                          <input
+                            type="text"
+                            value={project.image}
+                            onChange={(e) =>
+                              handleChange(`projects.${index}.image`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelClass}>标签（逗号分隔）</label>
                         <input
                           type="text"
                           value={project.tags.join(", ")}
@@ -404,7 +575,7 @@ export default function Admin() {
                               e.target.value.split(",").map((t) => t.trim())
                             )
                           }
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.25)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] focus:outline-none focus:border-[rgba(255,143,187,0.4)] transition-colors"
+                          className={inputClass}
                         />
                       </div>
                       <button
@@ -414,7 +585,7 @@ export default function Admin() {
                             formData.projects.filter((_, i) => i !== index)
                           )
                         }
-                        className="text-xs text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
+                        className="text-[11px] text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
                       >
                         删除此项
                       </button>
@@ -433,7 +604,7 @@ export default function Admin() {
                         },
                       ])
                     }
-                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.3)] text-sm text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
+                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.25)] text-[12px] text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
                   >
                     + 添加项目
                   </button>
@@ -441,17 +612,55 @@ export default function Admin() {
               )}
 
               {activeTab === "contact" && (
-                <div className="glass-card p-5 space-y-4">
-                  {renderTextarea("联系说明", "contact.description", "一段简短的联系说明...")}
-                  {renderField("邮箱", "contact.email", "email", "your@email.com")}
+                <div className="glass-card p-5 space-y-3">
+                  <div>
+                    <label className={labelClass}>联系说明</label>
+                    <textarea
+                      value={getField("contact.description")}
+                      onChange={(e) => handleChange("contact.description", e.target.value)}
+                      placeholder="一段简短的联系说明..."
+                      rows={3}
+                      className={`${inputClass} resize-none`}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>邮箱</label>
+                    <input
+                      type="email"
+                      value={getField("contact.email")}
+                      onChange={(e) => handleChange("contact.email", e.target.value)}
+                      placeholder="your@email.com"
+                      className={inputClass}
+                    />
+                  </div>
                   {formData.contact.socials.map((social, index) => (
                     <div
                       key={index}
-                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]"
+                      className="p-4 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)] space-y-3"
                     >
                       <div className="grid grid-cols-2 gap-3">
-                        {renderField("平台", `contact.socials.${index}.platform`)}
-                        {renderField("链接", `contact.socials.${index}.url`)}
+                        <div>
+                          <label className={labelClass}>平台</label>
+                          <input
+                            type="text"
+                            value={social.platform}
+                            onChange={(e) =>
+                              handleChange(`contact.socials.${index}.platform`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
+                        <div>
+                          <label className={labelClass}>链接</label>
+                          <input
+                            type="text"
+                            value={social.url}
+                            onChange={(e) =>
+                              handleChange(`contact.socials.${index}.url`, e.target.value)
+                            }
+                            className={inputClass}
+                          />
+                        </div>
                       </div>
                       <button
                         onClick={() =>
@@ -460,7 +669,7 @@ export default function Admin() {
                             formData.contact.socials.filter((_, i) => i !== index)
                           )
                         }
-                        className="text-xs text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
+                        className="text-[11px] text-[#FF8FB8] hover:text-[#FFB3D1] transition-colors"
                       >
                         删除此项
                       </button>
@@ -473,7 +682,7 @@ export default function Admin() {
                         { platform: "github", url: "https://github.com/" },
                       ])
                     }
-                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.3)] text-sm text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
+                    className="w-full py-2.5 rounded-xl border border-dashed border-[rgba(255,143,187,0.25)] text-[12px] text-[#FFB3D1] hover:bg-[rgba(255,143,187,0.06)] transition-colors"
                   >
                     + 添加社交链接
                   </button>
@@ -483,33 +692,18 @@ export default function Admin() {
           </div>
         </main>
 
-        {/* Preview */}
+        {/* Preview Panel */}
         {showPreview && (
-          <div className="hidden lg:flex w-[420px] flex-col border-l border-[rgba(255,255,255,0.06)] bg-[rgba(14,10,28,0.3)]">
-            <div className="px-5 py-4 border-b border-[rgba(255,255,255,0.06)]">
-              <h3 className="font-display text-sm font-semibold text-[#FFE6F2]">实时预览</h3>
+          <div className="hidden lg:flex w-[380px] flex-col border-l border-[rgba(255,255,255,0.06)] bg-[rgba(10,8,20,0.6)] backdrop-blur-xl">
+            <div className="px-4 py-3 border-b border-[rgba(255,255,255,0.06)] flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#FFB3D1] animate-pulse" />
+              <h3 className="font-display text-[11px] font-semibold text-[#FFE6F2]">实时预览</h3>
+              <span className="text-[9px] text-[rgba(252,220,236,0.3)] ml-auto">Live</span>
             </div>
-            <div className="flex-1 p-4 overflow-hidden">
-              <iframe
-                srcDoc={`
-                  <!DOCTYPE html>
-                  <html>
-                    <head>
-                      <base href="/">
-                      <meta charset="UTF-8">
-                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                      <link rel="stylesheet" href="/assets/index.css">
-                      <style>body{margin:0;}</style>
-                    </head>
-                    <body>
-                      <div id="root"></div>
-                      <script type="module" src="/assets/index.js"></script>
-                    </body>
-                  </html>
-                `}
-                className="w-full h-full rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[#0E0A1C]"
-                title="preview"
-              />
+            <div className="flex-1 p-3 overflow-hidden">
+              <div className="w-full h-full rounded-2xl border border-[rgba(255,255,255,0.08)] bg-[#0E0A1C] overflow-hidden">
+                <AdminPreview data={formData} />
+              </div>
             </div>
           </div>
         )}
