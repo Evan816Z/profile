@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import TypeWriter from "@/components/TypeWriter";
+import LiquidGlass from "@/components/LiquidGlass";
 import { useStore } from "@/store/useStore";
 
 export default function HeroSection() {
@@ -16,14 +17,14 @@ export default function HeroSection() {
           transition={{ duration: 0.5 }}
           className="flex items-center justify-center gap-2 mb-6"
         >
-          <span className="tag-pill">
+          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium text-[rgba(252,220,236,0.85)]">
             <Sparkles size={12} className="text-[#FFB3D1]" />
             个人主页
-          </span>
-          <span className="tag-pill">
+          </LiquidGlass>
+          <LiquidGlass className="gap-2 px-3 py-1.5 text-[11px] font-medium text-[rgba(252,220,236,0.85)]">
             <span className="live-dot" />
             在线
-          </span>
+          </LiquidGlass>
         </motion.div>
 
         {/* 头像 */}

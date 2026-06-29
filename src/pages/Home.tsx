@@ -1,4 +1,3 @@
-import NebulaBackground from "@/components/NebulaBackground";
 import LiquidGlass from "@/components/LiquidGlass";
 import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
@@ -11,7 +10,24 @@ import { Link } from "react-router-dom";
 export default function Home() {
   return (
     <div className="relative min-h-screen">
-      <NebulaBackground />
+      {/* 背景图片：放大填充 */}
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: "url(https://t.alcy.cc/moez)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+      />
+      {/* 暗角与色调叠加，让文字更清晰 */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle at 50% 30%, rgba(14,10,28,0.35) 0%, rgba(14,10,28,0.75) 100%)",
+        }}
+      />
 
       {/* 顶部导航 */}
       <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
@@ -35,7 +51,7 @@ export default function Home() {
 
       {/* 底部装饰 */}
       <footer className="relative z-10 py-8 text-center">
-        <p className="text-xs text-[rgba(252,220,236,0.3)]">
+        <p className="text-xs text-[rgba(252,220,236,0.5)] drop-shadow">
           © {new Date().getFullYear()} Evan816Z · Crafted with
           <span className="text-[#FF8FB8] mx-1">♥</span>
         </p>

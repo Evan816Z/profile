@@ -3,6 +3,13 @@ import { MapPin, User } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import { useStore } from "@/store/useStore";
 
+function scrollTo(id: string) {
+  const el = document.getElementById(id);
+  if (el) {
+    el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+}
+
 export default function AboutSection() {
   const { data } = useStore();
 
@@ -30,12 +37,12 @@ export default function AboutSection() {
           </div>
 
           <div className="flex flex-wrap gap-3 pt-2">
-            <a href="#contact" className="cta-primary">
+            <button onClick={() => scrollTo("contact")} className="cta-primary">
               联系我
-            </a>
-            <a href="#projects" className="cta-ghost">
+            </button>
+            <button onClick={() => scrollTo("projects")} className="cta-ghost">
               查看项目
-            </a>
+            </button>
           </div>
         </div>
       </div>
