@@ -185,7 +185,7 @@ export interface LiquidGlassParams {
 export const DEFAULT_PARAMS: LiquidGlassParams = {
   width: 400,
   height: 280,
-  borderRadius: 60,
+  borderRadius: 999,
   glassThickness: 80,
   bezelWidth: 60,
   refractiveIndex: 3.0,
@@ -225,11 +225,25 @@ function buildFilter(
 /* ─── Full rebuild pipeline ─── */
 export function rebuildFilter(id: string, params: LiquidGlassParams): string {
   const heightFn = SURFACE_FNS.convex_squircle;
+
+  /* 当 borderRadius >= 999 时（pill 形状），使用 min(w,h)/2 */
+  const effectiveRadius = params.borderRadius >= 999
+    ? Math.min(params.width, params.height) / 2
+    : params.borderRadius;
+
   const clampedBezel = Math.min(
     params.bezelWidth,
-    params.borderRadius - 1,
+    effectiveRadius - 1,
     Math.min(params.width, params.height) / 2 - 1
   );
+
+  /* 性能优化：限制 canvas 最大分辨率，避免大元素生成超大贴图 */
+  const MAX_CANVAS = 256;
+  const scale = Math.min(1, MAX_CANVAS / Math.max(params.width, params.height));
+  const cw = Math.max(2, Math.round(params.width * scale));
+  const ch = Math.max(2, Math.round(params.height * scale));
+  const cr = Math.max(1, Math.round(effectiveRadius * scale));
+  const cb = Math.max(1, Math.round(clampedBezel * scale));
 
   const profile = calculateRefractionProfile(
     params.glassThickness,
@@ -240,20 +254,12 @@ export function rebuildFilter(id: string, params: LiquidGlassParams): string {
   );
   const maxDisp = Math.max(...Array.from(profile).map(Math.abs)) || 1;
   const dispUrl = generateDisplacementMap(
-    params.width,
-    params.height,
-    params.borderRadius,
-    clampedBezel,
-    profile,
-    maxDisp
+    cw, ch, cr, cb, profile, maxDisp
   );
   const specUrl = generateSpecularMap(
-    params.width,
-    params.height,
-    params.borderRadius,
-    clampedBezel * 2.5
+    cw, ch, cr, cb * 2.5
   );
-  return buildFilter(id, params, profile, maxDisp, dispUrl, specUrl);
+  return buildFilter(id, { ...params, width: cw, height: ch }, profile, maxDisp, dispUrl, specUrl);
 }
 
 /* ─── Global defs registry ─── */

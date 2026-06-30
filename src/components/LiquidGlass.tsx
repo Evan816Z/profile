@@ -192,9 +192,15 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
     const build = () => {
       try {
         const rect = wrapper.getBoundingClientRect();
-        const w = Math.max(Math.round(rect.width), 2);
-        const h = Math.max(Math.round(rect.height), 2);
-        if (w < 2 || h < 2) return;
+        const rawW = Math.max(Math.round(rect.width), 2);
+        const rawH = Math.max(Math.round(rect.height), 2);
+        if (rawW < 2 || rawH < 2) return;
+
+        /* 性能优化：限制 canvas 最大分辨率 */
+        const MAX_CANVAS = 256;
+        const canvasScale = Math.min(1, MAX_CANVAS / Math.max(rawW, rawH));
+        const w = Math.max(2, Math.round(rawW * canvasScale));
+        const h = Math.max(2, Math.round(rawH * canvasScale));
 
         /* 与 archisvaze/liquid-glass 默认值保持一致 */
         const surfaceKey = "convex_squircle" as keyof typeof SURFACE_FNS;
@@ -205,7 +211,8 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
         const blurAmt = 0.3;
         const specOpacity = 0.5;
         const specSat = 4;
-        const radius = Math.min(60, Math.min(w, h) / 2 - 1);
+        /* pill 形状：radius = min(w,h)/2 */
+        const radius = Math.min(w, h) / 2;
 
         const heightFn = SURFACE_FNS[surfaceKey];
         const clampedBezel = Math.min(bezelW, radius - 1, Math.min(w, h) / 2 - 1);
@@ -240,13 +247,13 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
 
     const schedule = () => {
       if (timerRef.current) window.clearTimeout(timerRef.current);
-      timerRef.current = window.setTimeout(build, 30);
+      timerRef.current = window.setTimeout(build, 200);
     };
 
     const ro = new ResizeObserver(schedule);
     ro.observe(wrapper);
     window.addEventListener("resize", schedule);
-    requestAnimationFrame(() => requestAnimationFrame(build));
+    build();
 
     return () => {
       ro.disconnect();

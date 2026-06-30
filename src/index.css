@@ -114,11 +114,12 @@ body {
 :root {
   --tint-color: 255, 255, 255;
   --tint-opacity: 0.06;
+  --card-tint-opacity: 0.06;
   --shadow-blur: 20px;
   --shadow-spread: -5px;
   --shadow-color: rgba(255, 255, 255, 0.45);
   --outer-shadow-blur: 24px;
-  --glass-radius: 60px;
+  --glass-radius: 999px;
 }
 
 /* ─── Liquid Glass 控件 (archisvaze/liquid-glass 原版结构) ── */
@@ -199,7 +200,7 @@ body {
   border-radius: inherit;
   pointer-events: none;
   box-shadow: inset 0 0 var(--shadow-blur) var(--shadow-spread) var(--shadow-color);
-  background-color: rgba(var(--tint-color), var(--tint-opacity));
+  background-color: rgba(var(--tint-color), var(--card-tint-opacity));
 }
 
 /* ::after = backdrop-filter 应用 SVG 液态玻璃滤镜 (原版 glassDiv::after) */
