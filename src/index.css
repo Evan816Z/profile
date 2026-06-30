@@ -15,7 +15,10 @@
   --pink-dim: var(--theme-color);
   --purple: #A58CFF;
   --blue: #5B8FE3;
-  --accent-gradient: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, var(--theme-color) 40%, #A58CFF 100%);
+  --gradient-start: #FFB3D1;
+  --gradient-mid: #A58CFF;
+  --gradient-end: #5B8FE3;
+  --accent-gradient: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-mid) 50%, var(--gradient-end) 100%);
   --glass-blur: blur(30px) saturate(1.6);
   --font-display: "Outfit", "Google Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: "DM Sans", "Google Sans Text", -apple-system, BlinkMacSystemFont, sans-serif;

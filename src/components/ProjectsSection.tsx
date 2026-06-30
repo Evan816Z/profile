@@ -13,7 +13,7 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
 
   if (error) {
     return (
-      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[rgba(255,143,187,0.15)] to-[rgba(91,143,227,0.15)]">
+      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-[var(--gradient-start)]/15 to-[var(--gradient-end)]/15">
         <span className="text-xs text-[rgba(252,220,236,0.5)] font-medium">{alt}</span>
       </div>
     );

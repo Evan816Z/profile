@@ -4,7 +4,7 @@ import { defaultData } from "@/data/default";
 
 const STORAGE_KEY = "personal-site-data";
 const VERSION_KEY = "personal-site-version";
-const DATA_VERSION = "4"; // bump this to force-clear stale localStorage
+const DATA_VERSION = "5"; // bump this to force-clear stale localStorage
 
 function isClient() {
   return typeof window !== "undefined";

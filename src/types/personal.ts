@@ -36,5 +36,8 @@ export interface PersonalData {
     adminPassword: string;
     footerText: string;
     themeColor: string;
+    gradientStart: string;
+    gradientMid: string;
+    gradientEnd: string;
   };
 }

@@ -24,7 +24,10 @@ export default function Home({ previewData }: HomeProps) {
       document.title = settings.siteTitle;
     }
     document.documentElement.style.setProperty("--theme-color", settings.themeColor);
-  }, [settings.siteTitle, settings.themeColor]);
+    document.documentElement.style.setProperty("--gradient-start", settings.gradientStart);
+    document.documentElement.style.setProperty("--gradient-mid", settings.gradientMid);
+    document.documentElement.style.setProperty("--gradient-end", settings.gradientEnd);
+  }, [settings.siteTitle, settings.themeColor, settings.gradientStart, settings.gradientMid, settings.gradientEnd]);
 
   return (
     <div

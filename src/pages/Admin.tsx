@@ -46,7 +46,7 @@ type TabId = (typeof TABS)[number]["id"];
 export default function Admin() {
   const { data, updateData, resetData } = useStore();
   const [formData, setFormData] = useState<PersonalData>(data);
-  const [activeTab, setActiveTab] = useState<TabId>("hero");
+  const [activeTab, setActiveTab] = useState<TabId>("about");
   const [showPreview, setShowPreview] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [password, setPassword] = useState("");
@@ -134,9 +134,11 @@ export default function Admin() {
   };
 
   const inputClass =
-    "w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.3)] border border-[rgba(255,255,255,0.08)] text-sm text-[#FFE6F2] placeholder:text-[rgba(252,220,236,0.2)] focus:outline-none focus:border-[rgba(255,143,187,0.4)] focus:bg-[rgba(0,0,0,0.4)] transition-all";
+    "w-full px-3.5 py-2.5 rounded-xl bg-[rgba(0,0,0,0.65)] border border-[rgba(255,255,255,0.18)] text-sm text-white placeholder:text-[rgba(252,220,236,0.45)] focus:outline-none focus:border-[rgba(255,143,187,0.65)] focus:bg-[rgba(0,0,0,0.75)] focus:ring-1 focus:ring-[rgba(255,143,187,0.25)] transition-all";
 
-  const labelClass = "block text-[11px] font-medium text-[rgba(252,220,236,0.5)] mb-1.5";
+  const labelClass = "block text-xs font-semibold text-[rgba(255,255,255,0.92)] mb-1.5 drop-shadow-[0_1px_3px_rgba(0,0,0,0.75)]";
+
+  const sectionTitleClass = "font-display text-sm font-semibold text-[#FFE6F2] drop-shadow-[0_1px_3px_rgba(0,0,0,0.6)]";
 
   // ─── Login Screen ───
   if (!auth) {
@@ -343,7 +345,7 @@ export default function Admin() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col min-w-0">
+        <main className="flex-1 flex flex-col min-w-0 bg-[rgba(8,6,18,0.82)] backdrop-blur-xl">
           {/* Top Bar */}
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(10,8,20,0.4)] backdrop-blur-xl">
             <div className="flex items-center gap-2.5">
@@ -648,7 +650,14 @@ export default function Admin() {
               )}
 
               {activeTab === "settings" && (
-                <div className="glass-card p-5 space-y-4">
+                <div className="glass-card p-5 space-y-5">
+                  <div>
+                    <h3 className={sectionTitleClass}>基础设置</h3>
+                    <p className="text-[11px] text-[rgba(252,220,236,0.45)] mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                      站点标题、背景与可见性
+                    </p>
+                  </div>
+
                   <div>
                     <label className={labelClass}>网站标题</label>
                     <input
@@ -670,24 +679,6 @@ export default function Admin() {
                     />
                   </div>
                   <div>
-                    <label className={labelClass}>主题色</label>
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={getField("settings.themeColor")}
-                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
-                      />
-                      <input
-                        type="text"
-                        value={getField("settings.themeColor")}
-                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
-                        placeholder="#FFB3D1"
-                        className={`${inputClass} flex-1`}
-                      />
-                    </div>
-                  </div>
-                  <div>
                     <label className={labelClass}>页脚文案</label>
                     <input
                       type="text"
@@ -697,8 +688,11 @@ export default function Admin() {
                       className={inputClass}
                     />
                   </div>
-                  <div className="flex items-center justify-between p-3 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]">
-                    <span className="text-sm text-[#FFE6F2]">显示管理按钮</span>
+                  <div className="flex items-center justify-between p-3.5 rounded-xl bg-[rgba(0,0,0,0.3)] border border-[rgba(255,255,255,0.08)]">
+                    <div>
+                      <span className="block text-sm font-medium text-[#FFE6F2] drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">显示管理按钮</span>
+                      <span className="text-[10px] text-[rgba(252,220,236,0.4)] drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">在首页右上角显示进入后台的入口</span>
+                    </div>
                     <button
                       onClick={() =>
                         handleChange("settings.showAdminButton", !formData.settings.showAdminButton)
@@ -716,6 +710,110 @@ export default function Admin() {
                       />
                     </button>
                   </div>
+
+                  <div className="h-px bg-[rgba(255,255,255,0.08)]" />
+
+                  <div>
+                    <h3 className={sectionTitleClass}>主题色与渐变</h3>
+                    <p className="text-[11px] text-[rgba(252,220,236,0.45)] mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                      自定义强调色与全局渐变
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>主题色</label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={getField("settings.themeColor")}
+                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
+                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+                      />
+                      <input
+                        type="text"
+                        value={getField("settings.themeColor")}
+                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
+                        placeholder="#FFB3D1"
+                        className={`${inputClass} flex-1`}
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>渐变色</label>
+                    <div
+                      className="h-10 rounded-xl mb-3 border border-[rgba(255,255,255,0.15)] shadow-inner"
+                      style={{
+                        background: `linear-gradient(135deg, ${formData.settings.gradientStart} 0%, ${formData.settings.gradientMid} 50%, ${formData.settings.gradientEnd} 100%)`,
+                      }}
+                    />
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <span className="block text-[10px] text-[rgba(252,220,236,0.55)] mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">起始</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={getField("settings.gradientStart")}
+                            onChange={(e) => handleChange("settings.gradientStart", e.target.value)}
+                            className="w-8 h-8 rounded-md cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+                          />
+                          <input
+                            type="text"
+                            value={getField("settings.gradientStart")}
+                            onChange={(e) => handleChange("settings.gradientStart", e.target.value)}
+                            placeholder="#FFB3D1"
+                            className={`${inputClass} flex-1 min-w-0`}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-[rgba(252,220,236,0.55)] mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">中间</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={getField("settings.gradientMid")}
+                            onChange={(e) => handleChange("settings.gradientMid", e.target.value)}
+                            className="w-8 h-8 rounded-md cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+                          />
+                          <input
+                            type="text"
+                            value={getField("settings.gradientMid")}
+                            onChange={(e) => handleChange("settings.gradientMid", e.target.value)}
+                            placeholder="#A58CFF"
+                            className={`${inputClass} flex-1 min-w-0`}
+                          />
+                        </div>
+                      </div>
+                      <div>
+                        <span className="block text-[10px] text-[rgba(252,220,236,0.55)] mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">结束</span>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={getField("settings.gradientEnd")}
+                            onChange={(e) => handleChange("settings.gradientEnd", e.target.value)}
+                            className="w-8 h-8 rounded-md cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
+                          />
+                          <input
+                            type="text"
+                            value={getField("settings.gradientEnd")}
+                            onChange={(e) => handleChange("settings.gradientEnd", e.target.value)}
+                            placeholder="#5B8FE3"
+                            className={`${inputClass} flex-1 min-w-0`}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="h-px bg-[rgba(255,255,255,0.08)]" />
+
+                  <div>
+                    <h3 className={sectionTitleClass}>安全</h3>
+                    <p className="text-[11px] text-[rgba(252,220,236,0.45)] mt-0.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                      后台登录凭据
+                    </p>
+                  </div>
+
                   <div>
                     <label className={labelClass}>管理员密码</label>
                     <input
@@ -725,7 +823,7 @@ export default function Admin() {
                       placeholder="后台登录密码"
                       className={inputClass}
                     />
-                    <p className="text-[10px] text-[rgba(252,220,236,0.35)] mt-1.5">
+                    <p className="text-[11px] text-[rgba(252,220,236,0.45)] mt-1.5 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
                       修改后需要使用新密码重新登录
                     </p>
                   </div>

@@ -3,6 +3,7 @@ import { useEffect, useRef, useId, useState, type ReactNode } from "react";
 interface LiquidGlassProps {
   children: ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 /* ── 检测是否为 Safari / iOS（feImage+dataURL 不工作） ── */
@@ -170,7 +171,7 @@ const SURFACE_FNS = {
   },
 };
 
-export default function LiquidGlass({ children, className = "" }: LiquidGlassProps) {
+export default function LiquidGlass({ children, className = "", style }: LiquidGlassProps) {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const defsRef = useRef<SVGDefsElement>(null);
   const timerRef = useRef<number | null>(null);
@@ -266,13 +267,12 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
     <div
       ref={wrapperRef}
       className={`liquid-glass ${className}`}
-      style={
-        {
-          ["--lg-filter" as string]: useFallback
-            ? "blur(20px) saturate(1.8)"
-            : `url(#${filterId})`,
-        }
-      }
+      style={{
+        ...style,
+        ["--lg-filter" as string]: useFallback
+          ? "blur(20px) saturate(1.8)"
+          : `url(#${filterId})`,
+      }}
     >
       {children}
       {!useFallback && (

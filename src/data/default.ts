@@ -74,5 +74,8 @@ export const defaultData: PersonalData = {
     adminPassword: "Evan816",
     footerText: "Crafted with ♥",
     themeColor: "#FFB3D1",
+    gradientStart: "#FFB3D1",
+    gradientMid: "#A58CFF",
+    gradientEnd: "#5B8FE3",
   },
 };

@@ -21,7 +21,7 @@ export default function AboutSection({ previewData }: { previewData?: PersonalDa
     <SectionWrapper id="about">
       <GlassCard className="p-6 md:p-8">
         <div className="flex flex-col items-center mb-6">
-          <div className="w-20 h-20 rounded-full p-[2px] bg-gradient-to-br from-[var(--theme-color)] via-[#A58CFF] to-[#5B8FE3] mb-4">
+          <div className="w-20 h-20 rounded-full p-[2px] bg-gradient-to-br from-[var(--gradient-start)] via-[var(--gradient-mid)] to-[var(--gradient-end)] mb-4">
             <div className="w-full h-full rounded-full overflow-hidden bg-[#0E0A1C] p-[2px]">
               <img
                 src={data.hero.avatar}
