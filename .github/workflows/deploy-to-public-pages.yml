@@ -1,0 +1,51 @@
+name: Deploy to Public Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout private repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Copy SPA fallback and CNAME
+        run: |
+          cp dist/index.html dist/404.html
+          cp CNAME dist/CNAME
+
+      - name: Deploy to public repo gh-pages
+        env:
+          PUBLIC_REPO_PAT: ${{ secrets.PUBLIC_REPO_PAT }}
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git clone --depth 1 --branch gh-pages "https://x-access-token:${PUBLIC_REPO_PAT}@github.com/Evan816Z/profile.git" public-pages
+          rm -rf public-pages/*
+          cp -r dist/* public-pages/
+          cd public-pages
+          git add -A
+          if git diff --cached --quiet; then
+            echo "No changes to deploy"
+          else
+            git commit -m "deploy: 从私人仓库构建并部署"
+            git push
+          fi
