@@ -110,10 +110,10 @@ body {
   }
 }
 
-/* ─── Liquid Glass CSS Variables (archisvaze/liquid-glass 原版) ─── */
+/* ─── Liquid Glass CSS Variables (archisvaze/liquid-glass 原版) ── */
 :root {
   --tint-color: 255, 255, 255;
-  --tint-opacity: 0.12;
+  --tint-opacity: 0.06;
   --shadow-blur: 20px;
   --shadow-spread: -5px;
   --shadow-color: rgba(255, 255, 255, 0.45);
@@ -121,7 +121,7 @@ body {
   --glass-radius: 60px;
 }
 
-/* ─── Liquid Glass 控件 (archisvaze/liquid-glass 原版结构) ─── */
+/* ─── Liquid Glass 控件 (archisvaze/liquid-glass 原版结构) ── */
 .liquid-glass {
   position: relative;
   isolation: isolate;
@@ -132,10 +132,6 @@ body {
   color: #333;
   cursor: pointer;
   touch-action: none;
-  padding: 6px 16px;
-  gap: 6px;
-  font-size: 12px;
-  font-weight: 500;
   box-shadow: 0px 4px var(--outer-shadow-blur) rgba(0, 0, 0, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -159,7 +155,7 @@ body {
 }
 
 .liquid-glass:hover::before {
-  background-color: rgba(var(--tint-color), 0.12);
+  background-color: rgba(var(--tint-color), 0.18);
 }
 
 /* ::after = backdrop-filter 应用 SVG 液态玻璃滤镜 (原版 glassDiv::after) */
@@ -222,9 +218,17 @@ body {
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+.glass-card-hover::before {
+  transition: background-color 0.3s ease;
+}
+
 .glass-card-hover:hover {
   transform: translateY(-4px);
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.24);
+}
+
+.glass-card-hover:hover::before {
+  background-color: rgba(var(--tint-color), 0.14);
 }
 
 /* 渐变文字 */
