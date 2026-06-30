@@ -32,8 +32,8 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
         <div className="max-w-xl mx-auto flex items-center justify-between">
           <Link to="/admin">
-            <LiquidGlass className="gap-2 px-3 py-1.5 text-xs text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]">
-              <Settings size={13} />
+            <LiquidGlass className="gap-1 px-2 py-1 text-[10px] text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]">
+              <Settings size={11} />
               管理
             </LiquidGlass>
           </Link>
