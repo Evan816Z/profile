@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --theme-color: #FFB3D1;
   --bg: #0E0A1C;
   --bg-elevated: #15102A;
   --card-bg: rgba(20, 15, 40, 0.42);
@@ -10,11 +11,11 @@
   --text-primary: #FFE6F2;
   --text-secondary: rgba(252, 220, 236, 0.6);
   --text-tertiary: rgba(252, 220, 236, 0.4);
-  --pink: #FFB3D1;
-  --pink-dim: #FF8FB8;
+  --pink: var(--theme-color);
+  --pink-dim: var(--theme-color);
   --purple: #A58CFF;
   --blue: #5B8FE3;
-  --accent-gradient: linear-gradient(135deg, #FFD4E5 0%, #FFB3D1 30%, #A58CFF 70%, #5B8FE3 100%);
+  --accent-gradient: linear-gradient(135deg, rgba(255,255,255,0.5) 0%, var(--theme-color) 40%, #A58CFF 100%);
   --glass-blur: blur(30px) saturate(1.6);
   --font-display: "Outfit", "Google Sans", -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: "DM Sans", "Google Sans Text", -apple-system, BlinkMacSystemFont, sans-serif;

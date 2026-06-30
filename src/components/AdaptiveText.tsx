@@ -21,8 +21,8 @@ export default function AdaptiveText({
     if (ref.current && isLight !== null) {
       ref.current.style.color = isLight ? "#000" : "#fff";
       ref.current.style.textShadow = isLight
-        ? "0 1px 2px rgba(255,255,255,0.35)"
-        : "0 1px 3px rgba(0,0,0,0.35)";
+        ? "0 1px 3px rgba(255,255,255,0.7)"
+        : "0 1px 4px rgba(0,0,0,0.7)";
     }
   }, [isLight, ref]);
 

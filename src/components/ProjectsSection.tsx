@@ -5,6 +5,7 @@ import SectionWrapper from "@/components/SectionWrapper";
 import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
+import type { PersonalData } from "@/types/personal";
 
 function ProjectImage({ src, alt }: { src: string; alt: string }) {
   const [loaded, setLoaded] = useState(false);
@@ -31,15 +32,16 @@ function ProjectImage({ src, alt }: { src: string; alt: string }) {
       />
       {!loaded && (
         <div className="absolute inset-0 flex items-center justify-center bg-[rgba(0,0,0,0.2)]">
-          <div className="w-5 h-5 border-2 border-[rgba(255,255,255,0.2)] border-t-[#FFB3D1] rounded-full animate-spin" />
+          <div className="w-5 h-5 border-2 border-[rgba(255,255,255,0.2)] border-t-[var(--theme-color)] rounded-full animate-spin" />
         </div>
       )}
     </>
   );
 }
 
-export default function ProjectsSection() {
-  const { data } = useStore();
+export default function ProjectsSection({ previewData }: { previewData?: PersonalData }) {
+  const { data: storeData } = useStore();
+  const data = previewData || storeData;
 
   return (
     <SectionWrapper id="projects">
@@ -83,7 +85,7 @@ export default function ProjectsSection() {
               <div className="p-4">
                 <AdaptiveText
                   as="h3"
-                  className="font-display text-base font-semibold mb-1.5 group-hover:text-[#FFB3D1] transition-colors"
+                  className="font-display text-base font-semibold mb-1.5 group-hover:text-[var(--theme-color)] transition-colors"
                 >
                   {project.title}
                 </AdaptiveText>

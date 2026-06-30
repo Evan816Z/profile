@@ -712,6 +712,24 @@ export default function Admin() {
                     />
                   </div>
                   <div>
+                    <label className={labelClass}>主题色</label>
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={getField("settings.themeColor")}
+                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
+                        className="w-10 h-10 rounded-lg bg-transparent border-0 cursor-pointer"
+                      />
+                      <input
+                        type="text"
+                        value={getField("settings.themeColor")}
+                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
+                        placeholder="#FFB3D1"
+                        className={`${inputClass} flex-1`}
+                      />
+                    </div>
+                  </div>
+                  <div>
                     <label className={labelClass}>页脚文案</label>
                     <input
                       type="text"

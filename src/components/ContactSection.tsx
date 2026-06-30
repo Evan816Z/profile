@@ -4,6 +4,7 @@ import SectionWrapper from "@/components/SectionWrapper";
 import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
+import type { PersonalData } from "@/types/personal";
 
 const iconMap: Record<string, React.ComponentType<{ size?: number | string; className?: string }>> = {
   github: (props) => (
@@ -30,8 +31,9 @@ function DynamicSocialIcon({ name, ...props }: { name: string; size?: number; cl
   return <IconComponent {...props} />;
 }
 
-export default function ContactSection() {
-  const { data } = useStore();
+export default function ContactSection({ previewData }: { previewData?: PersonalData }) {
+  const { data: storeData } = useStore();
+  const data = previewData || storeData;
 
   return (
     <SectionWrapper id="contact" className="pb-32">

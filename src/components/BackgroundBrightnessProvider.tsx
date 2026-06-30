@@ -7,8 +7,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-
-const BG_URL = "https://t.alcy.cc/moez";
+import { useStore } from "@/store/useStore";
 
 interface RegisteredElement {
   el: HTMLElement;
@@ -22,6 +21,7 @@ interface ContextValue {
 const BackgroundBrightnessContext = createContext<ContextValue | null>(null);
 
 export function BackgroundBrightnessProvider({ children }: { children: ReactNode }) {
+  const { data } = useStore();
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null);
   const readyRef = useRef(false);
@@ -60,8 +60,8 @@ export function BackgroundBrightnessProvider({ children }: { children: ReactNode
       readyRef.current = false;
       setReady(true);
     };
-    img.src = BG_URL;
-  }, []);
+    img.src = data.settings.backgroundImage;
+  }, [data.settings.backgroundImage]);
 
   const isLightAt = useCallback((x: number, y: number): boolean | null => {
     const canvas = canvasRef.current;

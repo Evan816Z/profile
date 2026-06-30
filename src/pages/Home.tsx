@@ -1,27 +1,36 @@
 import { useEffect } from "react";
 import LiquidGlass from "@/components/LiquidGlass";
 import AdaptiveText from "@/components/AdaptiveText";
-import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
 import { useStore } from "@/store/useStore";
+import type { PersonalData } from "@/types/personal";
 import { Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export default function Home() {
-  const { data } = useStore();
+interface HomeProps {
+  previewData?: PersonalData;
+}
+
+export default function Home({ previewData }: HomeProps) {
+  const { data: storeData } = useStore();
+  const data = previewData || storeData;
   const { settings } = data;
 
   useEffect(() => {
     if (settings.siteTitle) {
       document.title = settings.siteTitle;
     }
-  }, [settings.siteTitle]);
+    document.documentElement.style.setProperty("--theme-color", settings.themeColor);
+  }, [settings.siteTitle, settings.themeColor]);
 
   return (
-    <div className="relative min-h-screen">
+    <div
+      className="relative min-h-screen"
+      style={{ "--theme-color": settings.themeColor } as React.CSSProperties}
+    >
       {/* 背景图片：放大填充 */}
       <div
         className="fixed inset-0 z-0"
@@ -56,19 +65,18 @@ export default function Home() {
         </header>
       )}
 
-      <main className="relative z-10">
-        <HeroSection />
-        <AboutSection />
-        <SkillsSection />
-        <ProjectsSection />
-        <ContactSection />
+      <main className="relative z-10 pt-20">
+        <AboutSection previewData={previewData} />
+        <SkillsSection previewData={previewData} />
+        <ProjectsSection previewData={previewData} />
+        <ContactSection previewData={previewData} />
       </main>
 
       {/* 底部装饰 */}
       <footer className="relative z-10 py-8 text-center">
         <AdaptiveText className="text-xs">
           © {new Date().getFullYear()} {data.hero.name} · {settings.footerText}
-          <span className="text-[#FF8FB8] mx-1">♥</span>
+          <span className="mx-1" style={{ color: "var(--theme-color)" }}>♥</span>
         </AdaptiveText>
       </footer>
     </div>

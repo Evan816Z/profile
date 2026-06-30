@@ -73,5 +73,6 @@ export const defaultData: PersonalData = {
     showAdminButton: true,
     adminPassword: "Evan816",
     footerText: "Crafted with ♥",
+    themeColor: "#FFB3D1",
   },
 };

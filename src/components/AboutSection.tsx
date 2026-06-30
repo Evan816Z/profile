@@ -4,6 +4,7 @@ import SectionWrapper from "@/components/SectionWrapper";
 import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
+import type { PersonalData } from "@/types/personal";
 
 function scrollTo(id: string) {
   const el = document.getElementById(id);
@@ -12,8 +13,9 @@ function scrollTo(id: string) {
   }
 }
 
-export default function AboutSection() {
-  const { data } = useStore();
+export default function AboutSection({ previewData }: { previewData?: PersonalData }) {
+  const { data: storeData } = useStore();
+  const data = previewData || storeData;
 
   return (
     <SectionWrapper id="about">

@@ -5,6 +5,7 @@ import SectionWrapper from "@/components/SectionWrapper";
 import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
 import { useStore } from "@/store/useStore";
+import type { PersonalData } from "@/types/personal";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type IconMap = Record<string, React.ComponentType<any>>;
@@ -15,8 +16,9 @@ function DynamicIcon({ name, ...props }: { name: string } & React.SVGProps<SVGSV
   return <IconComponent {...props} />;
 }
 
-export default function SkillsSection() {
-  const { data } = useStore();
+export default function SkillsSection({ previewData }: { previewData?: PersonalData }) {
+  const { data: storeData } = useStore();
+  const data = previewData || storeData;
   const categories = Array.from(new Set(data.skills.map((s) => s.category)));
 
   return (

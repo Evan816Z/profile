@@ -35,5 +35,6 @@ export interface PersonalData {
     showAdminButton: boolean;
     adminPassword: string;
     footerText: string;
+    themeColor: string;
   };
 }
