@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { MapPin, User } from "lucide-react";
+import { MapPin } from "lucide-react";
 import SectionWrapper from "@/components/SectionWrapper";
 import GlassCard from "@/components/GlassCard";
 import AdaptiveText from "@/components/AdaptiveText";
@@ -20,11 +20,22 @@ export default function AboutSection({ previewData }: { previewData?: PersonalDa
   return (
     <SectionWrapper id="about">
       <GlassCard className="p-6 md:p-8">
-        <div className="flex items-center gap-3 mb-6">
-          <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
-            <User size={18} className="text-[#333]" />
+        <div className="flex flex-col items-center mb-6">
+          <div className="w-20 h-20 rounded-full p-[2px] bg-gradient-to-br from-[var(--theme-color)] via-[#A58CFF] to-[#5B8FE3] mb-4">
+            <div className="w-full h-full rounded-full overflow-hidden bg-[#0E0A1C] p-[2px]">
+              <img
+                src={data.hero.avatar}
+                alt={data.hero.name}
+                referrerPolicy="no-referrer"
+                crossOrigin="anonymous"
+                className="w-full h-full rounded-full object-cover"
+                onError={(e) => {
+                  e.currentTarget.style.display = "none";
+                }}
+              />
+            </div>
           </div>
-          <div>
+          <div className="text-center">
             <AdaptiveText as="h2" className="font-display text-xl font-semibold">
               关于我
             </AdaptiveText>

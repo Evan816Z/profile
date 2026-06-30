@@ -81,7 +81,7 @@ export default function ContactSection({ previewData }: { previewData?: Personal
               target="_blank"
               rel="noopener noreferrer"
               whileHover={{ y: -3 }}
-              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.06)] hover:border-[rgba(255,143,187,0.25)] hover:bg-[rgba(255,143,187,0.06)] transition-all"
+              className="flex flex-col items-center gap-2 p-3 rounded-xl bg-[rgba(255,255,255,0.04)] border border-[rgba(255,255,255,0.08)] hover:border-[rgba(0,0,0,0.35)] hover:bg-[rgba(0,0,0,0.28)] transition-all"
             >
               <DynamicSocialIcon
                 name={social.platform}
