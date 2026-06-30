@@ -59,7 +59,7 @@ export default function AdminPreview({ data }: AdminPreviewProps) {
       <div className="mx-4 mb-4 rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-xl border border-[rgba(255,255,255,0.12)] p-4">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FFB3D1" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
               <circle cx="12" cy="7" r="4" />
             </svg>
@@ -70,7 +70,7 @@ export default function AdminPreview({ data }: AdminPreviewProps) {
           {data.about.bio || "暂无简介"}
         </p>
         <div className="flex items-center gap-1.5 text-[10px] text-[rgba(252,220,236,0.4)]">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#FF8FB8" strokeWidth="2">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
@@ -83,7 +83,7 @@ export default function AdminPreview({ data }: AdminPreviewProps) {
         <div className="mx-4 mb-4 rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-xl border border-[rgba(255,255,255,0.12)] p-4">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)]">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#A58CFF" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
               </svg>
             </div>
@@ -107,7 +107,7 @@ export default function AdminPreview({ data }: AdminPreviewProps) {
         <div className="mx-4 mb-4 rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-xl border border-[rgba(255,255,255,0.12)] p-4">
           <div className="flex items-center gap-2 mb-3">
             <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)]">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#5B8FE3" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z" />
               </svg>
             </div>
@@ -155,7 +155,7 @@ export default function AdminPreview({ data }: AdminPreviewProps) {
       <div className="mx-4 mb-8 rounded-2xl bg-[rgba(255,255,255,0.06)] backdrop-blur-xl border border-[rgba(255,255,255,0.12)] p-4">
         <div className="flex items-center gap-2 mb-3">
           <div className="w-7 h-7 rounded-lg flex items-center justify-center bg-[rgba(255,255,255,0.06)] border border-[rgba(255,255,255,0.1)]">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF8FB8" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#333" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
             </svg>
           </div>

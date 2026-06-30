@@ -24,7 +24,7 @@ export default function SkillsSection() {
       <GlassCard className="p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
-            <Sparkles size={18} className="text-[#555]" />
+            <Sparkles size={18} className="text-[#333]" />
           </div>
           <div>
             <AdaptiveText as="h2" className="font-display text-xl font-semibold">
@@ -53,7 +53,7 @@ export default function SkillsSection() {
                     >
                       <DynamicIcon
                         name={skill.icon}
-                        className="w-5 h-5 text-[rgba(252,220,236,0.55)] group-hover:text-[#FFB3D1]"
+                        className="w-5 h-5 text-[#333] group-hover:text-[#111]"
                       />
                       <AdaptiveText className="text-[11px] text-center font-medium">
                         {skill.name}

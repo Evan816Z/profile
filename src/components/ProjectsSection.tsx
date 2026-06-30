@@ -46,7 +46,7 @@ export default function ProjectsSection() {
       <GlassCard className="p-6 md:p-8">
         <div className="flex items-center gap-3 mb-6">
           <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)]">
-            <FolderGit2 size={18} className="text-[#555]" />
+            <FolderGit2 size={18} className="text-[#333]" />
           </div>
           <div>
             <AdaptiveText as="h2" className="font-display text-xl font-semibold">
@@ -76,7 +76,7 @@ export default function ProjectsSection() {
                 <ProjectImage src={project.image} alt={project.title} />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0E0A1C]/90 via-transparent to-transparent" />
                 <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <ExternalLink size={16} className="text-[#FFB3D1]" />
+                  <ExternalLink size={16} className="text-[#333]" />
                 </div>
               </div>
 

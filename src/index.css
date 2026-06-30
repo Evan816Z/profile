@@ -116,7 +116,7 @@ body {
   --viewport-width: 100vw;
   --tint-color: 255, 255, 255;
   --tint-opacity: 0.06;
-  --card-tint-opacity: 0.1;
+  --card-tint-opacity: 0.18;
   --shadow-blur: 20px;
   --shadow-spread: -5px;
   --shadow-color: rgba(255, 255, 255, 0.45);
