@@ -6,7 +6,18 @@ interface AdminPreviewProps {
 
 export default function AdminPreview({ data }: AdminPreviewProps) {
   return (
-    <div className="w-full h-full overflow-y-auto pr-1" style={{ scrollbarWidth: "thin" }}>
+    <div className="relative w-full h-full overflow-y-auto pr-1" style={{ scrollbarWidth: "thin" }}>
+      <div
+        className="fixed inset-0 z-0"
+        style={{
+          backgroundImage: `url(${data.settings.backgroundImage})`,
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+        }}
+        aria-hidden="true"
+      />
+      <div className="relative z-10">
       {/* Hero */}
       <div className="text-center py-8 px-4">
         <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.08)] border border-[rgba(255,255,255,0.12)] text-[10px] text-[rgba(252,220,236,0.7)] mb-5">
@@ -173,8 +184,9 @@ export default function AdminPreview({ data }: AdminPreviewProps) {
       {/* Footer */}
       <div className="text-center pb-6">
         <p className="text-[9px] text-[rgba(252,220,236,0.3)]">
-          © {new Date().getFullYear()} {data.hero.name}
+          © {new Date().getFullYear()} {data.hero.name} · {data.settings.footerText}
         </p>
+      </div>
       </div>
     </div>
   );

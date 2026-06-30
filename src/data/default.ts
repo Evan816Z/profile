@@ -67,4 +67,11 @@ export const defaultData: PersonalData = {
       { platform: "github", url: "https://github.com/Evan816Z", icon: "Github" },
     ],
   },
+  settings: {
+    siteTitle: "Evan816Z",
+    backgroundImage: "https://t.alcy.cc/moez",
+    showAdminButton: true,
+    adminPassword: "Evan816",
+    footerText: "Crafted with ♥",
+  },
 };

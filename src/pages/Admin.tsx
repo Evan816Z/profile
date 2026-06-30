@@ -17,12 +17,11 @@ import {
   Mail,
   Layers,
   Lock,
+  Settings,
 } from "lucide-react";
 import { Link } from "react-router-dom";
 import type { PersonalData } from "@/types/personal";
 import AdminPreview from "@/components/AdminPreview";
-
-const ADMIN_PASSWORD = "Evan816";
 
 function isAuthenticated() {
   if (typeof window === "undefined") return false;
@@ -41,6 +40,7 @@ const TABS = [
   { id: "skills", label: "技能", icon: Sparkles },
   { id: "projects", label: "项目", icon: FolderGit2 },
   { id: "contact", label: "联系", icon: Mail },
+  { id: "settings", label: "设置", icon: Settings },
 ] as const;
 
 type TabId = (typeof TABS)[number]["id"];
@@ -62,7 +62,7 @@ export default function Admin() {
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASSWORD) {
+    if (password === formData.settings.adminPassword) {
       setAuthenticated(true);
       setAuth(true);
       setError("");
@@ -686,6 +686,73 @@ export default function Admin() {
                   >
                     + 添加社交链接
                   </button>
+                </div>
+              )}
+
+              {activeTab === "settings" && (
+                <div className="glass-card p-5 space-y-4">
+                  <div>
+                    <label className={labelClass}>网站标题</label>
+                    <input
+                      type="text"
+                      value={getField("settings.siteTitle")}
+                      onChange={(e) => handleChange("settings.siteTitle", e.target.value)}
+                      placeholder="例如：Evan816Z"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>背景图片 URL</label>
+                    <input
+                      type="text"
+                      value={getField("settings.backgroundImage")}
+                      onChange={(e) => handleChange("settings.backgroundImage", e.target.value)}
+                      placeholder="https://..."
+                      className={inputClass}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelClass}>页脚文案</label>
+                    <input
+                      type="text"
+                      value={getField("settings.footerText")}
+                      onChange={(e) => handleChange("settings.footerText", e.target.value)}
+                      placeholder="Crafted with ♥"
+                      className={inputClass}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between p-3 rounded-xl bg-[rgba(0,0,0,0.2)] border border-[rgba(255,255,255,0.06)]">
+                    <span className="text-sm text-[#FFE6F2]">显示管理按钮</span>
+                    <button
+                      onClick={() =>
+                        handleChange("settings.showAdminButton", !formData.settings.showAdminButton)
+                      }
+                      className={`relative w-10 h-5 rounded-full transition-colors ${
+                        formData.settings.showAdminButton
+                          ? "bg-[#FFB3D1]"
+                          : "bg-[rgba(255,255,255,0.15)]"
+                      }`}
+                    >
+                      <span
+                        className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform ${
+                          formData.settings.showAdminButton ? "translate-x-5" : ""
+                        }`}
+                      />
+                    </button>
+                  </div>
+                  <div>
+                    <label className={labelClass}>管理员密码</label>
+                    <input
+                      type="text"
+                      value={getField("settings.adminPassword")}
+                      onChange={(e) => handleChange("settings.adminPassword", e.target.value)}
+                      placeholder="后台登录密码"
+                      className={inputClass}
+                    />
+                    <p className="text-[10px] text-[rgba(252,220,236,0.35)] mt-1.5">
+                      修改后需要使用新密码重新登录
+                    </p>
+                  </div>
                 </div>
               )}
             </div>

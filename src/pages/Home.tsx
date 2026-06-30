@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import LiquidGlass from "@/components/LiquidGlass";
 import AdaptiveText from "@/components/AdaptiveText";
 import HeroSection from "@/components/HeroSection";
@@ -5,17 +6,27 @@ import AboutSection from "@/components/AboutSection";
 import SkillsSection from "@/components/SkillsSection";
 import ProjectsSection from "@/components/ProjectsSection";
 import ContactSection from "@/components/ContactSection";
+import { useStore } from "@/store/useStore";
 import { Settings } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Home() {
+  const { data } = useStore();
+  const { settings } = data;
+
+  useEffect(() => {
+    if (settings.siteTitle) {
+      document.title = settings.siteTitle;
+    }
+  }, [settings.siteTitle]);
+
   return (
     <div className="relative min-h-screen">
       {/* 背景图片：放大填充 */}
       <div
         className="fixed inset-0 z-0"
         style={{
-          backgroundImage: "url(https://t.alcy.cc/moez)",
+          backgroundImage: `url(${settings.backgroundImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
@@ -29,19 +40,21 @@ export default function Home() {
       />
 
       {/* 顶部导航 */}
-      <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
-        <div className="mx-auto flex items-center justify-between" style={{ maxWidth: "calc(36rem * var(--viewport-scale))" }}>
-          <Link to="/admin">
-            <LiquidGlass
-              className="text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]"
-              style={{ padding: "2px 6px", fontSize: "9px", gap: "3px" }}
-            >
-              <Settings size={9} />
-              管理
-            </LiquidGlass>
-          </Link>
-        </div>
-      </header>
+      {settings.showAdminButton && (
+        <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
+          <div className="mx-auto flex items-center justify-between" style={{ maxWidth: "calc(36rem * var(--viewport-scale))" }}>
+            <Link to="/admin">
+              <LiquidGlass
+                className="text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]"
+                style={{ padding: "2px 6px", fontSize: "9px", gap: "3px" }}
+              >
+                <Settings size={9} />
+                管理
+              </LiquidGlass>
+            </Link>
+          </div>
+        </header>
+      )}
 
       <main className="relative z-10">
         <HeroSection />
@@ -54,7 +67,7 @@ export default function Home() {
       {/* 底部装饰 */}
       <footer className="relative z-10 py-8 text-center">
         <AdaptiveText className="text-xs">
-          © {new Date().getFullYear()} Evan816Z · Crafted with
+          © {new Date().getFullYear()} {data.hero.name} · {settings.footerText}
           <span className="text-[#FF8FB8] mx-1">♥</span>
         </AdaptiveText>
       </footer>

@@ -29,4 +29,11 @@ export interface PersonalData {
       icon: string;
     }[];
   };
+  settings: {
+    siteTitle: string;
+    backgroundImage: string;
+    showAdminButton: boolean;
+    adminPassword: string;
+    footerText: string;
+  };
 }

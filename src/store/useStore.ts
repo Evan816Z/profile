@@ -4,7 +4,7 @@ import { defaultData } from "@/data/default";
 
 const STORAGE_KEY = "personal-site-data";
 const VERSION_KEY = "personal-site-version";
-const DATA_VERSION = "3"; // bump this to force-clear stale localStorage
+const DATA_VERSION = "4"; // bump this to force-clear stale localStorage
 
 function isClient() {
   return typeof window !== "undefined";
@@ -22,7 +22,8 @@ function loadData(): PersonalData {
     }
     const stored = localStorage.getItem(STORAGE_KEY);
     if (stored) {
-      return JSON.parse(stored);
+      const parsed = JSON.parse(stored) as Partial<PersonalData>;
+      return { ...defaultData, ...parsed };
     }
   } catch {
     // ignore parse errors
@@ -70,7 +71,7 @@ export const useStore = create<StoreState>((set) => ({
   },
   importData: (json: string) => {
     try {
-      const data = JSON.parse(json) as PersonalData;
+      const data = { ...defaultData, ...JSON.parse(json) } as PersonalData;
       saveData(data);
       set({ data });
       return true;
