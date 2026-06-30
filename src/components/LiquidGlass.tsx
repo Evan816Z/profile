@@ -279,6 +279,9 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
         <svg
           className="liquid-glass-svg"
           xmlns="http://www.w3.org/2000/svg"
+          width="0"
+          height="0"
+          style={{ position: "absolute", overflow: "hidden" }}
           color-interpolation-filters="sRGB"
         >
           <defs ref={defsRef} />
