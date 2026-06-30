@@ -259,7 +259,9 @@ export function rebuildFilter(id: string, params: LiquidGlassParams): string {
   const specUrl = generateSpecularMap(
     cw, ch, cr, cb * 2.5
   );
-  return buildFilter(id, { ...params, width: cw, height: ch }, profile, maxDisp, dispUrl, specUrl);
+  /* feImage 的显示尺寸用元素原始尺寸，让 displacement/specular map 覆盖整个卡片；
+     图像本身分辨率是 cw/ch，会被拉伸/缩放以匹配元素，但位置比例保持一致。 */
+  return buildFilter(id, params, profile, maxDisp, dispUrl, specUrl);
 }
 
 /* ─── Global defs registry ─── */

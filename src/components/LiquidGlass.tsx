@@ -227,10 +227,10 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
         defs.innerHTML = `
           <filter id="${filterId}" x="0%" y="0%" width="100%" height="100%">
             <feGaussianBlur in="SourceGraphic" stdDeviation="${blurAmt}" result="blurred_source" />
-            <feImage href="${dispUrl}" x="0" y="0" width="${w}" height="${h}" result="disp_map" />
+            <feImage href="${dispUrl}" x="0" y="0" width="${rawW}" height="${rawH}" result="disp_map" />
             <feDisplacementMap in="blurred_source" in2="disp_map" scale="${scale}" xChannelSelector="R" yChannelSelector="G" result="displaced" />
             <feColorMatrix in="displaced" type="saturate" values="${specSat}" result="displaced_sat" />
-            <feImage href="${specUrl}" x="0" y="0" width="${w}" height="${h}" result="spec_layer" />
+            <feImage href="${specUrl}" x="0" y="0" width="${rawW}" height="${rawH}" result="spec_layer" />
             <feComposite in="displaced_sat" in2="spec_layer" operator="in" result="spec_masked" />
             <feComponentTransfer in="spec_layer" result="spec_faded">
               <feFuncA type="linear" slope="${specOpacity}" />
