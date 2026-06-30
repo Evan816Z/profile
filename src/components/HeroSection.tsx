@@ -8,7 +8,7 @@ export default function HeroSection() {
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-8 pb-12">
-      <div className="w-full max-w-lg mx-auto text-center">
+      <div className="w-full mx-auto text-center" style={{ maxWidth: "calc(32rem * var(--viewport-scale))" }}>
         {/* 头像 */}
         <motion.div
           initial={{ scale: 0.8, opacity: 0 }}

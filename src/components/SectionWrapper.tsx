@@ -19,7 +19,8 @@ export default function SectionWrapper({
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: "-80px" }}
         transition={{ duration: 0.6, ease: "easeOut" }}
-        className="max-w-lg mx-auto"
+        className="mx-auto"
+        style={{ maxWidth: "calc(32rem * var(--viewport-scale))" }}
       >
         {children}
       </motion.div>

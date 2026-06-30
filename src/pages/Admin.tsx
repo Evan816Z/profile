@@ -156,7 +156,7 @@ export default function Admin() {
         />
         <div className="fixed inset-0 z-0 bg-black/20" />
 
-        <div className="relative z-10 w-full max-w-sm">
+        <div className="relative z-10 w-full" style={{ maxWidth: "calc(24rem * var(--viewport-scale))" }}>
           <div className="glass-card p-8 space-y-6">
             {/* Logo */}
             <div className="text-center">
@@ -376,7 +376,7 @@ export default function Admin() {
 
           {/* Form */}
           <div className="flex-1 overflow-y-auto p-5">
-            <div className="max-w-lg mx-auto space-y-3">
+            <div className="mx-auto space-y-3" style={{ maxWidth: "calc(32rem * var(--viewport-scale))" }}>
               {activeTab === "hero" && (
                 <div className="glass-card p-5 space-y-4">
                   <div>

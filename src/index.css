@@ -112,6 +112,8 @@ body {
 
 /* ─── Liquid Glass CSS Variables (archisvaze/liquid-glass 原版) ── */
 :root {
+  --viewport-scale: 1;
+  --viewport-width: 100vw;
   --tint-color: 255, 255, 255;
   --tint-opacity: 0.06;
   --card-tint-opacity: 0.06;
@@ -120,6 +122,10 @@ body {
   --shadow-color: rgba(255, 255, 255, 0.45);
   --outer-shadow-blur: 24px;
   --glass-radius: 999px;
+  --glass-base-gap: 6px;
+  --glass-base-pad-x: 16px;
+  --glass-base-pad-y: 6px;
+  --glass-base-font: 12px;
 }
 
 /* ─── Liquid Glass 控件 (archisvaze/liquid-glass 原版结构) ── */
@@ -133,8 +139,16 @@ body {
   color: #333;
   cursor: pointer;
   touch-action: none;
-  box-shadow: 0px 4px var(--outer-shadow-blur) rgba(0, 0, 0, 0.18);
+  box-shadow: 0px 4px calc(var(--outer-shadow-blur) * var(--viewport-scale)) rgba(0, 0, 0, 0.18);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* 默认尺寸随窗口宽度比例缩放，优先级为 0，允许 Tailwind utility 类覆盖 */
+:where(.liquid-glass) {
+  gap: calc(var(--glass-base-gap) * var(--viewport-scale));
+  padding: calc(var(--glass-base-pad-y) * var(--viewport-scale)) calc(var(--glass-base-pad-x) * var(--viewport-scale));
+  font-size: calc(var(--glass-base-font) * var(--viewport-scale));
+  font-weight: 500;
 }
 
 .liquid-glass:hover {
@@ -185,10 +199,10 @@ body {
 /* ─── Glass Card 液态玻璃卡片 (同 archisvaze/liquid-glass glassDiv 结构) ─── */
 .glass-card {
   position: relative;
-  border-radius: 24px;
+  border-radius: calc(24px * var(--viewport-scale));
   overflow: hidden;
   isolation: isolate;
-  box-shadow: 0px 4px var(--outer-shadow-blur) rgba(0, 0, 0, 0.18);
+  box-shadow: 0px 4px calc(var(--outer-shadow-blur) * var(--viewport-scale)) rgba(0, 0, 0, 0.18);
 }
 
 /* ::before = 内阴影 + tint (原版 glassDiv::before) */

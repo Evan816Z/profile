@@ -267,9 +267,11 @@ export default function LiquidGlass({ children, className = "" }: LiquidGlassPro
       ref={wrapperRef}
       className={`liquid-glass ${className}`}
       style={
-        useFallback
-          ? undefined
-          : { ["--lg-filter" as string]: `url(#${filterId})` }
+        {
+          ["--lg-filter" as string]: useFallback
+            ? "blur(20px) saturate(1.8)"
+            : `url(#${filterId})`,
+        }
       }
     >
       {children}
