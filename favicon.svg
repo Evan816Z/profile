@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="t" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#7EC8F8"/>
+      <stop offset="100%" stop-color="#2E7BD6"/>
+    </linearGradient>
+    <radialGradient id="hl" cx="30%" cy="25%" r="40%">
+      <stop offset="0%" stop-color="rgba(255,255,255,0.12)"/>
+      <stop offset="100%" stop-color="rgba(255,255,255,0)"/>
+    </radialGradient>
+    <linearGradient id="dot" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#7EC8F8"/>
+      <stop offset="100%" stop-color="#4A9FD5"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="110" fill="#0B1628"/>
+  <rect width="512" height="512" rx="110" fill="url(#hl)"/>
+  <!-- T shape -->
+  <rect x="130" y="110" width="252" height="80" rx="36" fill="url(#t)"/>
+  <rect x="216" y="150" width="80" height="230" rx="36" fill="url(#t)"/>
+  <!-- Small circle -->
+  <circle cx="370" cy="370" r="38" fill="url(#dot)" opacity="0.85"/>
+  <circle cx="370" cy="370" r="22" fill="rgba(255,255,255,0.15)"/>
+</svg>
