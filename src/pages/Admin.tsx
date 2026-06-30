@@ -11,7 +11,6 @@ import {
   EyeOff,
   Menu,
   X,
-  User,
   Sparkles,
   FolderGit2,
   Mail,
@@ -35,7 +34,6 @@ function setAuthenticated(value: boolean) {
 }
 
 const TABS = [
-  { id: "hero", label: "Hero", icon: User },
   { id: "about", label: "关于", icon: Layers },
   { id: "skills", label: "技能", icon: Sparkles },
   { id: "projects", label: "项目", icon: FolderGit2 },
@@ -377,46 +375,6 @@ export default function Admin() {
           {/* Form */}
           <div className="flex-1 overflow-y-auto p-5">
             <div className="mx-auto space-y-3" style={{ maxWidth: "calc(32rem * var(--viewport-scale))" }}>
-              {activeTab === "hero" && (
-                <div className="glass-card p-5 space-y-4">
-                  <div>
-                    <label className={labelClass}>姓名</label>
-                    <input
-                      type="text"
-                      value={getField("hero.name")}
-                      onChange={(e) => handleChange("hero.name", e.target.value)}
-                      placeholder="你的名字"
-                      className={inputClass}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelClass}>头像 URL</label>
-                    <input
-                      type="text"
-                      value={getField("hero.avatar")}
-                      onChange={(e) => handleChange("hero.avatar", e.target.value)}
-                      placeholder="头像图片链接"
-                      className={inputClass}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelClass}>标语（每行一个）</label>
-                    <textarea
-                      value={formData.hero.taglines.join("\n")}
-                      onChange={(e) =>
-                        handleChange(
-                          "hero.taglines",
-                          e.target.value.split("\n").filter((line) => line.trim() !== "")
-                        )
-                      }
-                      rows={4}
-                      placeholder="例如：热爱编程&#10;全栈开发者"
-                      className={`${inputClass} resize-none`}
-                    />
-                  </div>
-                </div>
-              )}
-
               {activeTab === "about" && (
                 <div className="glass-card p-5 space-y-4">
                   <div>
@@ -718,7 +676,7 @@ export default function Admin() {
                         type="color"
                         value={getField("settings.themeColor")}
                         onChange={(e) => handleChange("settings.themeColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg bg-transparent border-0 cursor-pointer"
+                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
                       />
                       <input
                         type="text"
