@@ -32,8 +32,11 @@ export default function Home() {
       <header className="fixed top-0 left-0 right-0 z-50 px-4 py-3">
         <div className="mx-auto flex items-center justify-between" style={{ maxWidth: "calc(36rem * var(--viewport-scale))" }}>
           <Link to="/admin">
-            <LiquidGlass className="gap-1 px-2 py-1 text-[10px] text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]">
-              <Settings size={11} />
+            <LiquidGlass
+              className="text-[rgba(252,220,236,0.9)] hover:text-[#FFE6F2]"
+              style={{ padding: "2px 6px", fontSize: "9px", gap: "3px" }}
+            >
+              <Settings size={9} />
               管理
             </LiquidGlass>
           </Link>
