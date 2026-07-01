@@ -1,4 +1,5 @@
 import { useEffect, useRef, useId, useState, type ReactNode } from "react";
+import { isLowPowerMode } from "@/lib/perf";
 
 interface LiquidGlassProps {
   children: ReactNode;
@@ -13,7 +14,7 @@ function isSafariLike(): boolean {
   return /iP(hone|ad|od)|Safari/.test(ua) && !/Chrome|CriOS|Fxios/.test(ua);
 }
 
-const SKIP_SVG_FILTER = isSafariLike();
+const SKIP_SVG_FILTER = isSafariLike() || isLowPowerMode();
 
 let instanceCounter = 0;
 

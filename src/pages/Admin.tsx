@@ -157,7 +157,10 @@ export default function Admin() {
         <div className="fixed inset-0 z-0 bg-black/20" />
 
         <div className="relative z-10 w-full" style={{ maxWidth: "calc(24rem * var(--viewport-scale))" }}>
-          <div className="glass-card p-8 space-y-6">
+          <div
+            className="liquid-glass-card p-8 space-y-6"
+            style={{ "--lg-filter": "blur(20px) saturate(1.8)" } as React.CSSProperties}
+          >
             {/* Logo */}
             <div className="text-center">
               <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-[#FFB3D1] via-[#A58CFF] to-[#5B8FE3] flex items-center justify-center shadow-lg shadow-[rgba(165,140,255,0.25)]">
