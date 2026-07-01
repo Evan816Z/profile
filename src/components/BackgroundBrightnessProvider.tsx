@@ -8,7 +8,6 @@ import {
   type ReactNode,
 } from "react";
 import { useStore } from "@/store/useStore";
-import { isMobileDevice } from "@/lib/perf";
 
 interface RegisteredElement {
   el: HTMLElement;
@@ -28,7 +27,6 @@ export function BackgroundBrightnessProvider({ children }: { children: ReactNode
   const readyRef = useRef(false);
   const elementsRef = useRef<RegisteredElement[]>([]);
   const rafRef = useRef<number | null>(null);
-  const timeoutRef = useRef<number | null>(null);
   const pendingRef = useRef(false);
   const [ready, setReady] = useState(false);
 
@@ -119,16 +117,7 @@ export function BackgroundBrightnessProvider({ children }: { children: ReactNode
   const scheduleUpdate = useCallback(() => {
     if (pendingRef.current) return;
     pendingRef.current = true;
-    if (isMobileDevice()) {
-      /* 移动端降低采样频率，减少 scroll 时的 GPU/CPU 开销 */
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
-      timeoutRef.current = window.setTimeout(() => {
-        timeoutRef.current = null;
-        updateAll();
-      }, 120);
-    } else {
-      rafRef.current = requestAnimationFrame(updateAll);
-    }
+    rafRef.current = requestAnimationFrame(updateAll);
   }, [updateAll]);
 
   const register = useCallback(
@@ -155,7 +144,6 @@ export function BackgroundBrightnessProvider({ children }: { children: ReactNode
       window.removeEventListener("scroll", onScroll);
       window.removeEventListener("resize", onResize);
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      if (timeoutRef.current) window.clearTimeout(timeoutRef.current);
     };
   }, [ready, scheduleUpdate]);
 

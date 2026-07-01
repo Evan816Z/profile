@@ -3,7 +3,6 @@ import {
   registerLiquidGlassFilter,
   unregisterLiquidGlassFilter,
 } from "@/components/LiquidGlassFilter";
-import { isLowPowerMode } from "@/lib/perf";
 
 interface GlassCardProps {
   children: ReactNode;
@@ -24,15 +23,10 @@ export default function GlassCard({
   const ref = useRef<HTMLDivElement>(null);
   const baseId = useId().replace(/:/g, "");
   const [filterId, setFilterId] = useState<string | null>(null);
-  const [useFallback, setUseFallback] = useState(isLowPowerMode());
 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-
-    /* 移动端/低功耗设备：跳过昂贵的 SVG filter 生成，直接用 CSS blur */
-    if (useFallback) return;
-
     const id = `gc-${baseId}`;
 
     const updateFilter = () => {
@@ -75,11 +69,7 @@ export default function GlassCard({
   }, [baseId]);
 
   const style: React.CSSProperties = {
-    ["--lg-filter" as string]: filterId
-      ? `url(#${filterId})`
-      : useFallback
-        ? "blur(20px) saturate(1.8)"
-        : "none",
+    ["--lg-filter" as string]: filterId ? `url(#${filterId})` : "none",
   };
 
   return (

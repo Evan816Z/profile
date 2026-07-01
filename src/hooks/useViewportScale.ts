@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { isMobileDevice } from "@/lib/perf";
 
 const BASE_WIDTH = 420;
 const MIN_SCALE = 0.82;
@@ -13,7 +12,6 @@ export function useViewportScale() {
   useEffect(() => {
     if (typeof window === "undefined" || !document.documentElement) return;
 
-    const isMobile = isMobileDevice();
     const setScale = () => {
       const width = window.innerWidth;
       const scale = computeScale(width);
@@ -24,29 +22,18 @@ export function useViewportScale() {
 
     setScale();
     let raf = 0;
-    let timeout = 0;
     const onResize = () => {
       if (raf) cancelAnimationFrame(raf);
-      if (timeout) window.clearTimeout(timeout);
-      if (isMobile) {
-        /* 移动端 orientationchange/resize 通常连续触发，防抖避免重排抖动 */
-        timeout = window.setTimeout(() => {
-          timeout = 0;
-          setScale();
-        }, 150);
-      } else {
-        raf = requestAnimationFrame(setScale);
-      }
+      raf = requestAnimationFrame(setScale);
     };
 
     window.addEventListener("resize", onResize);
-    window.addEventListener("orientationchange", onResize);
+    window.addEventListener("orientationchange", setScale);
 
     return () => {
       window.removeEventListener("resize", onResize);
-      window.removeEventListener("orientationchange", onResize);
+      window.removeEventListener("orientationchange", setScale);
       if (raf) cancelAnimationFrame(raf);
-      if (timeout) window.clearTimeout(timeout);
     };
   }, []);
 }
