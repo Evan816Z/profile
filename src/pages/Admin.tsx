@@ -154,12 +154,12 @@ export default function Admin() {
             backgroundRepeat: "no-repeat",
           }}
         />
-        <div className="fixed inset-0 z-0 bg-black/20" />
+        <div className="fixed inset-0 z-0 bg-black/10" />
 
         <div className="relative z-10 w-full" style={{ maxWidth: "calc(24rem * var(--viewport-scale))" }}>
           <div
-            className="liquid-glass-card p-8 space-y-6"
-            style={{ "--lg-filter": "blur(20px) saturate(1.8)" } as React.CSSProperties}
+            className="liquid-glass-card p-8 space-y-6 border border-[rgba(255,255,255,0.18)]"
+            style={{ "--lg-filter": "blur(24px) saturate(1.8)" } as React.CSSProperties}
           >
             {/* Logo */}
             <div className="text-center">
@@ -348,7 +348,7 @@ export default function Admin() {
         </aside>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col min-w-0 bg-[rgba(8,6,18,0.82)] backdrop-blur-xl">
+        <main className="flex-1 flex flex-col min-w-0 bg-[rgba(8,6,18,0.48)] backdrop-blur-md">
           {/* Top Bar */}
           <div className="flex items-center justify-between px-5 py-3.5 border-b border-[rgba(255,255,255,0.06)] bg-[rgba(10,8,20,0.4)] backdrop-blur-xl">
             <div className="flex items-center gap-2.5">
@@ -726,12 +726,14 @@ export default function Admin() {
                   <div>
                     <label className={labelClass}>主题色</label>
                     <div className="flex items-center gap-3">
-                      <input
-                        type="color"
-                        value={getField("settings.themeColor")}
-                        onChange={(e) => handleChange("settings.themeColor", e.target.value)}
-                        className="w-10 h-10 rounded-lg cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
-                      />
+                      <div className="relative w-10 h-10 rounded-xl overflow-hidden border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)] shrink-0">
+                        <input
+                          type="color"
+                          value={getField("settings.themeColor")}
+                          onChange={(e) => handleChange("settings.themeColor", e.target.value)}
+                          className="absolute -top-2 -left-2 w-16 h-16 cursor-pointer p-0 border-0"
+                        />
+                      </div>
                       <input
                         type="text"
                         value={getField("settings.themeColor")}
@@ -744,65 +746,76 @@ export default function Admin() {
 
                   <div>
                     <label className={labelClass}>渐变色</label>
-                    <div
-                      className="h-10 rounded-xl mb-3 border border-[rgba(255,255,255,0.15)] shadow-inner"
-                      style={{
-                        background: `linear-gradient(135deg, ${formData.settings.gradientStart} 0%, ${formData.settings.gradientMid} 50%, ${formData.settings.gradientEnd} 100%)`,
-                      }}
-                    />
-                    <div className="grid grid-cols-3 gap-3">
-                      <div>
-                        <span className="block text-[10px] text-[rgba(252,220,236,0.55)] mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">起始</span>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="color"
-                            value={getField("settings.gradientStart")}
-                            onChange={(e) => handleChange("settings.gradientStart", e.target.value)}
-                            className="w-8 h-8 rounded-md cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
-                          />
-                          <input
-                            type="text"
-                            value={getField("settings.gradientStart")}
-                            onChange={(e) => handleChange("settings.gradientStart", e.target.value)}
-                            placeholder="#FFB3D1"
-                            className={`${inputClass} flex-1 min-w-0`}
-                          />
-                        </div>
+                    <div className="space-y-4">
+                      {/* 渐变预览条 */}
+                      <div
+                        className="h-12 rounded-2xl border border-[rgba(255,255,255,0.22)] shadow-inner shadow-[rgba(0,0,0,0.25)]"
+                        style={{
+                          background: `linear-gradient(135deg, ${formData.settings.gradientStart} 0%, ${formData.settings.gradientMid} 50%, ${formData.settings.gradientEnd} 100%)`,
+                        }}
+                      />
+
+                      {/* 三色选择 */}
+                      <div className="grid grid-cols-3 gap-3">
+                        {[
+                          { key: "gradientStart", label: "起始" },
+                          { key: "gradientMid", label: "中间" },
+                          { key: "gradientEnd", label: "结束" },
+                        ].map(({ key, label }) => (
+                          <div key={key} className="space-y-1.5">
+                            <span className="block text-[10px] font-medium text-[rgba(252,220,236,0.7)] drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                              {label}
+                            </span>
+                            <div className="flex items-center gap-2">
+                              <div className="relative w-9 h-9 rounded-lg overflow-hidden border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)] shrink-0">
+                                <input
+                                  type="color"
+                                  value={getField(`settings.${key}`)}
+                                  onChange={(e) => handleChange(`settings.${key}`, e.target.value)}
+                                  className="absolute -top-2 -left-2 w-16 h-16 cursor-pointer p-0 border-0"
+                                />
+                              </div>
+                              <input
+                                type="text"
+                                value={getField(`settings.${key}`)}
+                                onChange={(e) => handleChange(`settings.${key}`, e.target.value)}
+                                placeholder="#FFB3D1"
+                                className={`${inputClass} flex-1 min-w-0 text-xs`}
+                              />
+                            </div>
+                          </div>
+                        ))}
                       </div>
+
+                      {/* 预设渐变色板 */}
                       <div>
-                        <span className="block text-[10px] text-[rgba(252,220,236,0.55)] mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">中间</span>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="color"
-                            value={getField("settings.gradientMid")}
-                            onChange={(e) => handleChange("settings.gradientMid", e.target.value)}
-                            className="w-8 h-8 rounded-md cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
-                          />
-                          <input
-                            type="text"
-                            value={getField("settings.gradientMid")}
-                            onChange={(e) => handleChange("settings.gradientMid", e.target.value)}
-                            placeholder="#A58CFF"
-                            className={`${inputClass} flex-1 min-w-0`}
-                          />
-                        </div>
-                      </div>
-                      <div>
-                        <span className="block text-[10px] text-[rgba(252,220,236,0.55)] mb-1 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">结束</span>
-                        <div className="flex items-center gap-2">
-                          <input
-                            type="color"
-                            value={getField("settings.gradientEnd")}
-                            onChange={(e) => handleChange("settings.gradientEnd", e.target.value)}
-                            className="w-8 h-8 rounded-md cursor-pointer border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)]"
-                          />
-                          <input
-                            type="text"
-                            value={getField("settings.gradientEnd")}
-                            onChange={(e) => handleChange("settings.gradientEnd", e.target.value)}
-                            placeholder="#5B8FE3"
-                            className={`${inputClass} flex-1 min-w-0`}
-                          />
+                        <span className="block text-[10px] font-medium text-[rgba(252,220,236,0.7)] mb-2 drop-shadow-[0_1px_2px_rgba(0,0,0,0.6)]">
+                          推荐预设
+                        </span>
+                        <div className="flex flex-wrap gap-2">
+                          {[
+                            { start: "#FFB3D1", mid: "#A58CFF", end: "#5B8FE3" },
+                            { start: "#FF8FB8", mid: "#C084FC", end: "#60A5FA" },
+                            { start: "#F472B6", mid: "#A78BFA", end: "#38BDF8" },
+                            { start: "#FB7185", mid: "#E879F9", end: "#818CF8" },
+                            { start: "#FCD34D", mid: "#FB923C", end: "#F43F5E" },
+                            { start: "#34D399", mid: "#22D3EE", end: "#60A5FA" },
+                          ].map((preset, idx) => (
+                            <button
+                              key={idx}
+                              type="button"
+                              onClick={() => {
+                                handleChange("settings.gradientStart", preset.start);
+                                handleChange("settings.gradientMid", preset.mid);
+                                handleChange("settings.gradientEnd", preset.end);
+                              }}
+                              className="w-8 h-8 rounded-full border-2 border-[rgba(255,255,255,0.25)] shadow-[0_0_0_1px_rgba(0,0,0,0.3)] hover:scale-110 transition-transform"
+                              style={{
+                                background: `linear-gradient(135deg, ${preset.start} 0%, ${preset.mid} 50%, ${preset.end} 100%)`,
+                              }}
+                              title={`${preset.start} → ${preset.mid} → ${preset.end}`}
+                            />
+                          ))}
                         </div>
                       </div>
                     </div>
